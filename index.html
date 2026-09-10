@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Science by HUGs</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Science by HUGs">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #f5f6f8;
+    }
+
+    iframe {
+      border: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #fallback {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
+      text-align: center;
+      background: #f5f6f8;
+    }
+
+    #fallback a {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      color: white;
+      background: #111827;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec"
+    title="Science by HUGs Storefront"
+    allow="fullscreen">
+  </iframe>
+
+  <div id="fallback">
+    <div>
+      <h2>Science by HUGs</h2>
+      <p>The storefront could not be loaded inside this page.</p>
+      <a href="https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec">Open Storefront</a>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function() {
+      const frame = document.querySelector("iframe");
+      try {
+        if (!frame || !frame.contentWindow) {
+          document.getElementById("fallback").style.display = "flex";
+        }
+      } catch (e) {
+        // Cross-origin access is expected; leave the storefront visible.
+      }
+    }, 5000);
+  </script>
+</body>
+</html>
