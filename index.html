@@ -100,6 +100,15 @@
     .profile-form input:focus{border-color:var(--blue)}
     .profile-saved{text-align:center;color:#6FD7A0;font-size:13px;font-weight:800;min-height:18px}
     .account-card-row{cursor:pointer}
+
+    .membership-hero{background:linear-gradient(135deg,rgba(7,151,255,.14),rgba(7,151,255,.035));border:1px solid rgba(7,151,255,.28);border-radius:24px;padding:22px;margin-top:16px}
+    .membership-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+    .status-pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 11px;background:rgba(74,214,132,.1);border:1px solid rgba(74,214,132,.24);color:#79dfa4;font-size:12px;font-weight:900}
+    .benefit-list{display:grid;gap:10px;margin-top:14px}
+    .benefit{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px}
+    .benefit-icon{width:42px;height:42px;border-radius:13px;background:#111D29;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+    .benefit h3{margin:1px 0 5px;font-size:17px}.benefit p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+
 </style>
 </head>
 <body>
@@ -153,7 +162,7 @@
       </div>
 
       <div class="account-card">
-        <div class="account-card-row">
+        <div class="account-card-row" onclick="showMembership()">
           <div class="account-icon">⭐</div>
           <div class="account-card-copy">
             <h3>Membership</h3>
@@ -197,6 +206,35 @@
         <button class="primary" onclick="submitCartOrder()">Continue to Order Form</button>
         <button class="secondary" onclick="showProducts()">Continue Shopping</button>
       </div>
+    </section>
+
+    <section id="membershipPage" class="page">
+      <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
+      <div class="hero"><div class="eyebrow">Membership</div><h1>Founding Member.</h1><p>Thank you for being one of the original Science by HUGs members.</p></div>
+
+      <div class="membership-hero">
+        <div class="account-card-row">
+          <div>
+            <div class="eyebrow">Membership Status</div>
+            <h2 style="margin:7px 0 0;font-size:27px;letter-spacing:-.5px">Founding Member</h2>
+          </div>
+          <div class="status-pill">● Active</div>
+        </div>
+      </div>
+
+      <div class="sectionhead"><h2>Your Benefits</h2></div>
+      <div class="benefit-list">
+        <div class="benefit">
+          <div class="benefit-icon">🚚</div>
+          <div><h3>Free Shipping</h3><p>Free shipping on eligible orders.</p></div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">📅</div>
+          <div><h3>Monthly Promotional Pricing</h3><p>Founding Members get access to special promotional pricing offered each month.</p></div>
+        </div>
+      </div>
+
+      <div class="notice">Your Founding Member benefits are displayed here. Membership verification and promotional pricing will be connected to the account system in a later phase.</div>
     </section>
 
     <section id="profilePage" class="page">
@@ -351,6 +389,9 @@ function renderCart(){
     </div>`).join("");
   const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
   document.getElementById("cartTotal").textContent=money(total);
+}
+function showMembership(){
+  showPage("membershipPage");
 }
 function showProfile(){
   showPage("profilePage");
