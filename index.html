@@ -373,7 +373,7 @@ function render(){
   document.getElementById("count").textContent=list.length+" item"+(list.length===1?"":"s");
   document.getElementById("products").innerHTML=list.length?list.map(p=>`
     <article class="card" onclick="openDetail(${Number(p.id)})">
-      <div class="photo">${p.image?`<img src="${escapeHTML(p.image)}" alt="">`:'<div class="placeholder">✦</div>'}</div>
+      <div class="photo"><img src="${escapeHTML(p.image||'./product-default.png')}" alt=""></div>
       <div class="cardbody">
         <div class="category">${escapeHTML(p.category||"Product")}</div>
         <div class="name">${escapeHTML(p.product)}</div>
@@ -388,7 +388,7 @@ function render(){
 function openDetail(id){
   const p=products.find(x=>Number(x.id)===Number(id)); if(!p)return;
   document.getElementById("detailContent").innerHTML=`
-    ${p.image?`<img class="detailimg" src="${escapeHTML(p.image)}" alt="">`:""}
+    <img class="detailimg" src="${escapeHTML(p.image||'./product-default.png')}" alt="">
     <div class="category" style="margin-top:18px">${escapeHTML(p.category||"Product")}</div>
     <h2>${escapeHTML(p.product)}</h2>
     <div class="bigprice">${money(p.price)}</div>
