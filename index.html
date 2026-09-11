@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#03070B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Science by HUGs">
+  <link rel="apple-touch-icon" href="./icon.png">
+  <title>Science by HUGs</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #03070B;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .wrap {
+      width: min(520px, 100%);
+    }
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 34px;
+      display: block;
+      margin: 0 auto 26px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -.5px;
+    }
+    p {
+      margin: 12px 0 24px;
+      color: #A8B6C3;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+    a {
+      display: flex;
+      min-height: 64px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #0797FF, #0075D1);
+      color: white;
+      text-decoration: none;
+      font-size: 19px;
+      font-weight: 900;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <img src="./icon.png" alt="Science by HUGs">
+    <h1>Science by HUGs</h1>
+    <p>Opening the storefront…</p>
+    <a href="https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec">Open Storefront</a>
+  </main>
+
+  <script>
+    const APP_URL = 'https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec';
+
+    const launchedFromHomeScreen =
+      window.navigator.standalone === true ||
+      window.matchMedia("(display-mode: standalone)").matches;
+
+    if (launchedFromHomeScreen) {
+      window.location.replace(APP_URL);
+    }
+  </script>
+</body>
+</html>
