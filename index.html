@@ -166,7 +166,16 @@
     <section id="accountPage" class="page">
       <div class="hero"><div class="eyebrow">Account</div><h1>Your account.</h1><p>Create an account or log in to manage your membership, orders, and profile.</p></div>
 
-      <div class="account-auth-card">
+      <div id="accountWelcome" class="account-welcome" style="display:none">
+        <div class="auth-icon" style="margin:0">👤</div>
+        <div class="welcome-copy" style="flex:1;display:grid;gap:3px">
+          <strong>Your Science by HUGs account</strong>
+          <span style="color:var(--muted);font-size:13px">You are logged in.</span>
+        </div>
+        <button class="secondary" style="width:auto;padding:10px 13px;font-size:12px" onclick="logoutAccount()">Log Out</button>
+      </div>
+
+      <div id="accountAuthCard" class="account-auth-card">
         <div class="auth-icon">👤</div>
         <div class="auth-copy">
           <h2>Create an account or log in</h2>
@@ -443,19 +452,58 @@ function renderCart(){
   const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
   document.getElementById("cartTotal").textContent=money(total);
 }
+function getSavedCustomer(){
+  try{return JSON.parse(localStorage.getItem("sbhCustomer")||"null");}
+  catch(e){return null;}
+}
+
+function saveCustomer(customer){
+  localStorage.setItem("sbhCustomer",JSON.stringify(customer));
+  localStorage.setItem("sbhProfile",JSON.stringify({
+    first:customer.first||"",
+    last:customer.last||"",
+    email:customer.email||"",
+    phone:customer.phone||"",
+    customerId:customer.customerId||"",
+    membership:customer.membership||"",
+    accountStatus:customer.accountStatus||""
+  }));
+  updateAccountUI();
+}
+
+function updateAccountUI(){
+  const customer=getSavedCustomer();
+  const auth=document.getElementById("accountAuthCard");
+  const welcome=document.getElementById("accountWelcome");
+  if(!auth||!welcome)return;
+
+  if(customer){
+    auth.style.display="none";
+    welcome.style.display="flex";
+    const copy=welcome.querySelector(".welcome-copy");
+    if(copy){
+      copy.innerHTML=`<strong>${escapeHTML([customer.first,customer.last].filter(Boolean).join(" ")||"Your Science by HUGs account")}</strong><span>${escapeHTML(customer.email||"")}</span>`;
+    }
+  }else{
+    auth.style.display="block";
+    welcome.style.display="none";
+  }
+}
+
 function showCreateAccount(){
   showPage("createAccountPage");
-  ["createFirst","createLast","createEmail","createPhone"].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.value="";
-  });
+  const saved=getSavedCustomer()||{};
+  document.getElementById("createFirst").value=saved.first||"";
+  document.getElementById("createLast").value=saved.last||"";
+  document.getElementById("createEmail").value=saved.email||"";
+  document.getElementById("createPhone").value=saved.phone||"";
   const msg=document.getElementById("createAccountMessage");
   if(msg)msg.textContent="";
 }
 
 function showLogin(){
   showPage("loginPage");
-  const saved=JSON.parse(localStorage.getItem("sbhProfile")||"{}");
+  const saved=getSavedCustomer()||JSON.parse(localStorage.getItem("sbhProfile")||"{}");
   const email=document.getElementById("loginEmail");
   if(email)email.value=saved.email||"";
   const msg=document.getElementById("loginMessage");
@@ -463,31 +511,98 @@ function showLogin(){
 }
 
 function createAccount(){
-  const profile={
-    first:document.getElementById("createFirst").value.trim(),
-    last:document.getElementById("createLast").value.trim(),
-    email:document.getElementById("createEmail").value.trim(),
-    phone:document.getElementById("createPhone").value.trim()
-  };
+  const first=document.getElementById("createFirst").value.trim();
+  const last=document.getElementById("createLast").value.trim();
+  const email=document.getElementById("createEmail").value.trim();
+  const phone=document.getElementById("createPhone").value.trim();
   const msg=document.getElementById("createAccountMessage");
-  if(!profile.first||!profile.last||!profile.email){
+
+  if(!first||!last||!email){
     msg.textContent="Please enter your first name, last name, and email.";
     return;
   }
-  localStorage.setItem("sbhProfile",JSON.stringify(profile));
-  msg.textContent="Account information saved. Customer record connection is next.";
+
+  msg.textContent="Creating your account…";
+
+  const callback="sbhCreateCustomer_"+Date.now();
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=data&&data.error?data.error:"We could not create your account. Please try again.";
+        return;
+      }
+
+      saveCustomer(data.customer);
+      msg.textContent="Account created successfully.";
+      setTimeout(()=>showPage("accountPage"),500);
+    }catch(error){
+      msg.textContent="We could not create your account. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+  script.id=callback;
+  script.src=API_URL+"?api=createCustomer&first="+encodeURIComponent(first)+"&last="+encodeURIComponent(last)+"&email="+encodeURIComponent(email)+"&phone="+encodeURIComponent(phone)+"&callback="+callback+"&t="+Date.now();
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+    msg.textContent="We could not connect to your account service. Please try again.";
+  };
+  document.body.appendChild(script);
 }
 
 function loginAccount(){
   const email=document.getElementById("loginEmail").value.trim();
   const msg=document.getElementById("loginMessage");
   if(!email){msg.textContent="Please enter your email address.";return;}
-  const saved=JSON.parse(localStorage.getItem("sbhProfile")||"{}");
-  if(String(saved.email||"").toLowerCase()===email.toLowerCase()){
-    msg.textContent="Account found on this device.";
-  }else{
-    msg.textContent="Account lookup will be connected to your customer records next.";
-  }
+
+  msg.textContent="Looking up your account…";
+
+  const callback="sbhCustomer_"+Date.now();
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=data&&data.error?data.error:"We could not look up your account.";
+        return;
+      }
+
+      if(!data.found){
+        msg.textContent="No account was found for that email address. Please create an account first.";
+        return;
+      }
+
+      saveCustomer(data.customer);
+      msg.textContent="Logged in successfully.";
+      setTimeout(()=>showPage("accountPage"),500);
+    }catch(error){
+      msg.textContent="We could not log you in. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+  script.id=callback;
+  script.src=API_URL+"?api=customer&email="+encodeURIComponent(email)+"&callback="+callback+"&t="+Date.now();
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+    msg.textContent="We could not connect to your account service. Please try again.";
+  };
+  document.body.appendChild(script);
+}
+
+function logoutAccount(){
+  localStorage.removeItem("sbhCustomer");
+  localStorage.removeItem("sbhProfile");
+  updateAccountUI();
+  showPage("accountPage");
 }
 
 function showMembership(){
@@ -607,6 +722,7 @@ function syncBottomNav(){
   nav.style.top="auto";
   nav.style.bottom="0px";
 }
+updateAccountUI();
 function showProducts(){showPage("productsPage");}
 function showPage(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
