@@ -173,11 +173,11 @@
       </div>
 
       <div class="account-card">
-        <div class="account-card-row">
+        <div class="account-card-row" onclick="showOrders()">
           <div class="account-icon">📦</div>
           <div class="account-card-copy">
             <h3>Orders</h3>
-            <p>View your order history and order status.</p>
+            <p>View your invoice history and order status.</p>
           </div>
           <div class="account-arrow">›</div>
         </div>
@@ -235,6 +235,17 @@
       </div>
 
       <div class="notice">Your Founding Member benefits are displayed here. Membership verification and promotional pricing will be connected to the account system in a later phase.</div>
+    </section>
+
+    <section id="ordersPage" class="page">
+      <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
+      <div class="hero"><div class="eyebrow">Orders</div><h1>Your orders.</h1><p>Review your invoice history, totals, and current payment status.</p></div>
+
+      <div class="orders-list" id="ordersList">
+        <div class="empty">Your order history will appear here once your account is connected to your invoices.</div>
+      </div>
+
+      <div class="notice">Order history will use the invoice information from your existing system: Invoice #, Date, Total, and Payment Status.</div>
     </section>
 
     <section id="profilePage" class="page">
@@ -392,6 +403,9 @@ function renderCart(){
 }
 function showMembership(){
   showPage("membershipPage");
+}
+function showOrders(){
+  showPage("ordersPage");
 }
 function showProfile(){
   showPage("profilePage");
