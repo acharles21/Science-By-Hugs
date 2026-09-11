@@ -100,6 +100,14 @@
     .profile-form input:focus{border-color:var(--blue)}
     .profile-saved{text-align:center;color:#6FD7A0;font-size:13px;font-weight:800;min-height:18px}
     .account-card-row{cursor:pointer}
+    .order-status{display:block;width:max-content;padding:0;font-size:13px;font-weight:800;margin-top:8px;background:none;border:0}
+    .order-status.pending{color:#F4C95D}
+    .order-status.paid{color:#62B7FF}
+    .order-status.processing{color:#B78CFF}
+    .order-status.shipped{color:#65D7FF}
+    .order-status.delivered{color:#70D99A}
+    .order-status.delayed{color:#FFB15C}
+    .order-status.cancelled{color:#FF6F78}
 
     .membership-hero{background:linear-gradient(135deg,rgba(7,151,255,.14),rgba(7,151,255,.035));border:1px solid rgba(7,151,255,.28);border-radius:24px;padding:22px;margin-top:16px}
     .membership-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
@@ -441,6 +449,16 @@ function loadOrders(){
       box.innerHTML=invoices.map(order=>{
         const date=order.date?new Date(order.date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"—";
         const total=money(Number(order.total)||0);
+        const status=String(order.status||"Pending Payment").trim();
+        const statusClass={
+          "Pending Payment":"pending",
+          "Paid - Pending Order":"paid",
+          "Ordered - Processing":"processing",
+          "Shipped":"shipped",
+          "Delivered":"delivered",
+          "Delayed":"delayed",
+          "Cancelled":"cancelled"
+        }[status]||"pending";
         return `
           <div class="account-card" style="margin-bottom:12px">
             <div class="account-card-row" style="cursor:default">
@@ -448,7 +466,7 @@ function loadOrders(){
               <div class="account-card-copy">
                 <h3>${escapeHTML(order.invoiceNumber||"Invoice")}</h3>
                 <p>${escapeHTML(date)} · ${escapeHTML(total)}</p>
-                <p style="margin-top:6px">${escapeHTML(order.status||"Pending Payment")}</p>
+                <div class="order-status ${statusClass}">${escapeHTML(status)}</div>
               </div>
             </div>
           </div>`;
