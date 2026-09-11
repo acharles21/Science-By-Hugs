@@ -236,31 +236,32 @@
 
     <section id="membershipPage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
-      <div class="hero"><div class="eyebrow">Membership</div><h1>Founding Member.</h1><p>Thank you for being one of the original Science by HUGs members.</p></div>
+
+      <div class="hero">
+        <div class="eyebrow">Membership</div>
+        <h1 id="membershipPageTitle">Your membership.</h1>
+        <p id="membershipPageDescription">Your Science by HUGs membership benefits.</p>
+      </div>
 
       <div class="membership-hero">
         <div class="account-card-row">
           <div>
             <div class="eyebrow">Membership Status</div>
-            <h2 style="margin:7px 0 0;font-size:27px;letter-spacing:-.5px">Founding Member</h2>
+            <h2 id="membershipName" style="margin:7px 0 0;font-size:27px;letter-spacing:-.5px">Loading…</h2>
           </div>
-          <div class="status-pill">● Active</div>
+          <div id="membershipStatus" class="status-pill">● Active</div>
         </div>
       </div>
 
       <div class="sectionhead"><h2>Your Benefits</h2></div>
-      <div class="benefit-list">
-        <div class="benefit">
-          <div class="benefit-icon">🚚</div>
-          <div><h3>Free Shipping</h3><p>Free shipping on eligible orders.</p></div>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon">📅</div>
-          <div><h3>Monthly Promotional Pricing</h3><p>Founding Members get access to special promotional pricing offered each month.</p></div>
-        </div>
+
+      <div class="benefit-list" id="membershipBenefits">
+        <div class="empty">Loading your membership benefits…</div>
       </div>
 
-      <div class="notice">Your Founding Member benefits are displayed here. Membership verification and promotional pricing will be connected to the account system in a later phase.</div>
+      <div class="notice" id="membershipNotice">
+        Your membership benefits are based on your current Science by HUGs membership.
+      </div>
     </section>
 
     <section id="ordersPage" class="page">
@@ -607,6 +608,119 @@ function logoutAccount(){
 
 function showMembership(){
   showPage("membershipPage");
+  loadMembership();
+}
+
+function loadMembership(){
+  const customer=getSavedCustomer();
+
+  const nameEl=document.getElementById("membershipName");
+  const titleEl=document.getElementById("membershipPageTitle");
+  const descEl=document.getElementById("membershipPageDescription");
+  const statusEl=document.getElementById("membershipStatus");
+  const benefitsEl=document.getElementById("membershipBenefits");
+  const noticeEl=document.getElementById("membershipNotice");
+
+  if(!nameEl||!benefitsEl)return;
+
+  if(!customer){
+    nameEl.textContent="No Account";
+    titleEl.textContent="Your membership.";
+    descEl.textContent="Create an account or log in to view your membership.";
+    statusEl.textContent="● Not Logged In";
+    benefitsEl.innerHTML='<div class="empty">Please create an account or log in to view your membership benefits.</div>';
+    noticeEl.textContent="Your membership benefits will appear here once you are logged in.";
+    return;
+  }
+
+  const membership=String(customer.membership||"").trim();
+  const accountStatus=String(customer.accountStatus||"").trim();
+
+  if(!membership){
+    nameEl.textContent="No Membership";
+    titleEl.textContent="Your membership.";
+    descEl.textContent="Your account does not currently have a membership assigned.";
+    statusEl.textContent=accountStatus ? "● "+accountStatus : "● Inactive";
+    benefitsEl.innerHTML='<div class="empty">No membership benefits are currently assigned.</div>';
+    noticeEl.textContent="Membership information is based on your current customer record.";
+    return;
+  }
+
+  nameEl.textContent=membership;
+  titleEl.textContent=membership+".";
+  descEl.textContent="Your Science by HUGs membership benefits.";
+  statusEl.textContent="● "+(accountStatus||"Active");
+  benefitsEl.innerHTML='<div class="loading"><div class="spinner"></div>Loading your benefits…</div>';
+
+  const callback="sbhMembership_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success||!data.membership){
+        benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
+        noticeEl.textContent="Your membership is currently listed as "+membership+".";
+        return;
+      }
+
+      const benefits=Array.isArray(data.membership.benefits)
+        ? data.membership.benefits
+        : [];
+
+      if(!benefits.length){
+        benefitsEl.innerHTML='<div class="empty">No benefits are currently listed for this membership.</div>';
+      }else{
+        benefitsEl.innerHTML=benefits.map(function(benefit){
+          let icon="⭐";
+
+          const lower=String(benefit).toLowerCase();
+
+          if(lower.includes("shipping")){
+            icon="🚚";
+          }else if(lower.includes("promotional")||lower.includes("pricing")){
+            icon="📅";
+          }else if(lower.includes("exclusive")){
+            icon="🔬";
+          }
+
+          return `
+            <div class="benefit">
+              <div class="benefit-icon">${icon}</div>
+              <div>
+                <h3>${escapeHTML(benefit)}</h3>
+                <p>Included with your ${escapeHTML(data.membership.name)} membership.</p>
+              </div>
+            </div>`;
+        }).join("");
+      }
+
+      noticeEl.textContent="Your membership benefits are based on your current Science by HUGs customer record.";
+    }catch(error){
+      benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
+    }
+  };
+
+  const script=document.createElement("script");
+  script.id=callback;
+  script.src=API_URL+
+    "?api=membership&membership="+
+    encodeURIComponent(membership)+
+    "&callback="+
+    callback+
+    "&t="+
+    Date.now();
+
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+    benefitsEl.innerHTML='<div class="empty">We could not connect to your membership service. Please try again.</div>';
+  };
+
+  document.body.appendChild(script);
 }
 function showOrders(){
   showPage("ordersPage");
