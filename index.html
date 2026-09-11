@@ -242,10 +242,10 @@
       <div class="hero"><div class="eyebrow">Orders</div><h1>Your orders.</h1><p>Review your invoice history, totals, and current payment status.</p></div>
 
       <div class="orders-list" id="ordersList">
-        <div class="empty">Your order history will appear here once your account is connected to your invoices.</div>
+        <div class="empty">Enter your order email in Profile to view your orders.</div>
       </div>
 
-      <div class="notice">Order history will use the invoice information from your existing system: Invoice #, Date, Total, and Payment Status.</div>
+      <div class="notice">Order history is matched securely using the email address from your order.</div>
     </section>
 
     <section id="profilePage" class="page">
@@ -406,6 +406,67 @@ function showMembership(){
 }
 function showOrders(){
   showPage("ordersPage");
+  loadOrders();
+}
+
+function loadOrders(){
+  const box=document.getElementById("ordersList");
+  if(!box)return;
+
+  const saved=JSON.parse(localStorage.getItem("sbhProfile")||"{}");
+  const email=String(saved.email||"").trim();
+
+  if(!email){
+    box.innerHTML='<div class="empty">Please save your email in Profile first, then return here to view your orders.</div>';
+    return;
+  }
+
+  box.innerHTML='<div class="loading"><div class="spinner"></div>Loading your orders…</div>';
+
+  const callback="sbhInvoices_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+      const s=document.getElementById(callback);
+      if(s)s.remove();
+
+      const invoices=Array.isArray(data)?data:[];
+
+      if(!invoices.length){
+        box.innerHTML='<div class="empty">No orders were found for this email address.</div>';
+        return;
+      }
+
+      box.innerHTML=invoices.map(order=>{
+        const date=order.date?new Date(order.date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"—";
+        const total=money(Number(order.total)||0);
+        return `
+          <div class="account-card" style="margin-bottom:12px">
+            <div class="account-card-row" style="cursor:default">
+              <div class="account-icon">📄</div>
+              <div class="account-card-copy">
+                <h3>${escapeHTML(order.invoiceNumber||"Invoice")}</h3>
+                <p>${escapeHTML(date)} · ${escapeHTML(total)}</p>
+                <p style="margin-top:6px">${escapeHTML(order.status||"Pending Payment")}</p>
+              </div>
+            </div>
+          </div>`;
+      }).join("");
+    }catch(error){
+      box.innerHTML='<div class="empty">We could not load your orders. Please try again.</div>';
+    }
+  };
+
+  const s=document.createElement("script");
+  s.id=callback;
+  s.src=API_URL+"?api=invoices&email="+encodeURIComponent(email)+"&callback="+callback+"&t="+Date.now();
+  s.onerror=function(){
+    delete window[callback];
+    s.remove();
+    box.innerHTML='<div class="empty">We could not load your orders. Please try again.</div>';
+  };
+  document.body.appendChild(s);
 }
 function showProfile(){
   showPage("profilePage");
