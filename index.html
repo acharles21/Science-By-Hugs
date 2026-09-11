@@ -633,94 +633,154 @@ function loadMembership(){
     return;
   }
 
-  const membership=String(customer.membership||"").trim();
-  const accountStatus=String(customer.accountStatus||"").trim();
+  // Refresh the customer record from Google Sheets every time Membership opens.
+  benefitsEl.innerHTML='<div class="loading"><div class="spinner"></div>Checking your membership…</div>';
 
-  if(!membership){
-    nameEl.textContent="No Membership";
-    titleEl.textContent="Your membership.";
-    descEl.textContent="Your account does not currently have a membership assigned.";
-    statusEl.textContent=accountStatus ? "● "+accountStatus : "● Inactive";
-    benefitsEl.innerHTML='<div class="empty">No membership benefits are currently assigned.</div>';
-    noticeEl.textContent="Membership information is based on your current customer record.";
-    return;
-  }
+  const customerCallback="sbhMembershipCustomer_"+Date.now();
 
-  nameEl.textContent=membership;
-  titleEl.textContent=membership+".";
-  descEl.textContent="Your Science by HUGs membership benefits.";
-  statusEl.textContent="● "+(accountStatus||"Active");
-  benefitsEl.innerHTML='<div class="loading"><div class="spinner"></div>Loading your benefits…</div>';
-
-  const callback="sbhMembership_"+Date.now();
-
-  window[callback]=function(data){
+  window[customerCallback]=function(data){
     try{
-      delete window[callback];
+      delete window[customerCallback];
 
-      const script=document.getElementById(callback);
-      if(script)script.remove();
+      const customerScript=document.getElementById(customerCallback);
+      if(customerScript)customerScript.remove();
 
-      if(!data||!data.success||!data.membership){
-        benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
-        noticeEl.textContent="Your membership is currently listed as "+membership+".";
+      if(data&&data.success&&data.found&&data.customer){
+        saveCustomer(data.customer);
+      }
+
+      const freshCustomer=getSavedCustomer()||customer;
+      const membership=String(freshCustomer.membership||"").trim();
+      const accountStatus=String(freshCustomer.accountStatus||"").trim();
+
+      if(!membership){
+        nameEl.textContent="No Membership";
+        titleEl.textContent="Your membership.";
+        descEl.textContent="Your account does not currently have a membership assigned.";
+        statusEl.textContent=accountStatus ? "● "+accountStatus : "● Inactive";
+        benefitsEl.innerHTML='<div class="empty">No membership benefits are currently assigned.</div>';
+        noticeEl.textContent="Membership information is based on your current customer record.";
         return;
       }
 
-      const benefits=Array.isArray(data.membership.benefits)
-        ? data.membership.benefits
-        : [];
+      nameEl.textContent=membership;
+      titleEl.textContent=membership+".";
+      descEl.textContent="Your Science by HUGs membership benefits.";
+      statusEl.textContent="● "+(accountStatus||"Active");
+      benefitsEl.innerHTML='<div class="loading"><div class="spinner"></div>Loading your benefits…</div>';
 
-      if(!benefits.length){
-        benefitsEl.innerHTML='<div class="empty">No benefits are currently listed for this membership.</div>';
-      }else{
-        benefitsEl.innerHTML=benefits.map(function(benefit){
-          let icon="⭐";
+      const callback="sbhMembership_"+Date.now();
 
-          const lower=String(benefit).toLowerCase();
+      window[callback]=function(data){
+        try{
+          delete window[callback];
 
-          if(lower.includes("shipping")){
-            icon="🚚";
-          }else if(lower.includes("promotional")||lower.includes("pricing")){
-            icon="📅";
-          }else if(lower.includes("exclusive")){
-            icon="🔬";
+          const script=document.getElementById(callback);
+          if(script)script.remove();
+
+          if(!data||!data.success||!data.membership){
+            benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
+            noticeEl.textContent="Your membership is currently listed as "+membership+".";
+            return;
           }
 
-          return `
-            <div class="benefit">
-              <div class="benefit-icon">${icon}</div>
-              <div>
-                <h3>${escapeHTML(benefit)}</h3>
-                <p>Included with your ${escapeHTML(data.membership.name)} membership.</p>
-              </div>
-            </div>`;
-        }).join("");
-      }
+          const benefits=Array.isArray(data.membership.benefits)
+            ? data.membership.benefits
+            : [];
 
-      noticeEl.textContent="Your membership benefits are based on your current Science by HUGs customer record.";
+          if(!benefits.length){
+            benefitsEl.innerHTML='<div class="empty">No benefits are currently listed for this membership.</div>';
+          }else{
+            benefitsEl.innerHTML=benefits.map(function(benefit){
+              let icon="⭐";
+
+              const lower=String(benefit).toLowerCase();
+
+              if(lower.includes("shipping")){
+                icon="🚚";
+              }else if(lower.includes("promotional")||lower.includes("pricing")){
+                icon="📅";
+              }else if(lower.includes("exclusive")){
+                icon="🔬";
+              }
+
+              return `
+                <div class="benefit">
+                  <div class="benefit-icon">${icon}</div>
+                  <div>
+                    <h3>${escapeHTML(benefit)}</h3>
+                    <p>Included with your ${escapeHTML(data.membership.name)} membership.</p>
+                  </div>
+                </div>`;
+            }).join("");
+          }
+
+          noticeEl.textContent="Your membership benefits are based on your current Science by HUGs customer record.";
+        }catch(error){
+          benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
+        }
+      };
+
+      const script=document.createElement("script");
+      script.id=callback;
+      script.src=API_URL+
+        "?api=membership&membership="+
+        encodeURIComponent(membership)+
+        "&callback="+
+        callback+
+        "&t="+
+        Date.now();
+
+      script.onerror=function(){
+        delete window[callback];
+        script.remove();
+        benefitsEl.innerHTML='<div class="empty">We could not connect to your membership service. Please try again.</div>';
+      };
+
+      document.body.appendChild(script);
     }catch(error){
-      benefitsEl.innerHTML='<div class="empty">We could not load your membership benefits. Please try again.</div>';
+      benefitsEl.innerHTML='<div class="empty">We could not refresh your membership. Please try again.</div>';
     }
   };
 
-  const script=document.createElement("script");
-  script.id=callback;
-  script.src=API_URL+
-    "?api=membership&membership="+
-    encodeURIComponent(membership)+
+  const customerScript=document.createElement("script");
+  customerScript.id=customerCallback;
+  customerScript.src=API_URL+
+    "?api=customer&email="+
+    encodeURIComponent(customer.email||"")+
     "&callback="+
-    callback+
+    customerCallback+
     "&t="+
     Date.now();
 
-  script.onerror=function(){
-    delete window[callback];
-    script.remove();
-    benefitsEl.innerHTML='<div class="empty">We could not connect to your membership service. Please try again.</div>';
+  customerScript.onerror=function(){
+    delete window[customerCallback];
+    customerScript.remove();
+
+    // If the refresh fails, fall back to the saved customer record.
+    const fallback=getSavedCustomer()||customer;
+    const membership=String(fallback.membership||"").trim();
+    const accountStatus=String(fallback.accountStatus||"").trim();
+
+    if(!membership){
+      nameEl.textContent="No Membership";
+      titleEl.textContent="Your membership.";
+      descEl.textContent="Your account does not currently have a membership assigned.";
+      statusEl.textContent=accountStatus ? "● "+accountStatus : "● Inactive";
+      benefitsEl.innerHTML='<div class="empty">No membership benefits are currently assigned.</div>';
+      noticeEl.textContent="We could not refresh your account, so your saved membership is being shown.";
+      return;
+    }
+
+    nameEl.textContent=membership;
+    titleEl.textContent=membership+".";
+    descEl.textContent="Your Science by HUGs membership benefits.";
+    statusEl.textContent="● "+(accountStatus||"Active");
+    benefitsEl.innerHTML='<div class="empty">We could not refresh your membership. Please try again.</div>';
+    noticeEl.textContent="We could not refresh your account, so your saved membership is being shown.";
   };
 
-  document.body.appendChild(script);
+  document.body.appendChild(customerScript);
 }
 function showOrders(){
   showPage("ordersPage");
