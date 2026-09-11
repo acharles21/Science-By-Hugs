@@ -93,7 +93,14 @@
     .welcome-copy{min-width:0}.welcome-copy strong{display:block;font-size:18px}.welcome-copy span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
     .account-card-row{display:flex;align-items:center;justify-content:space-between;gap:16px}.account-icon{width:44px;height:44px;border-radius:14px;background:#111D29;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}.account-card-copy{flex:1}.account-card-copy h3{margin-bottom:5px}.account-arrow{color:#718191;font-size:25px}
     @media(min-width:700px){main{max-width:720px;margin:auto}.grid{grid-template-columns:repeat(3,1fr)}}
-  </style>
+  
+    .profile-form{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:16px}
+    .profile-form label{display:grid;gap:7px;color:var(--muted);font-size:12px;font-weight:800}
+    .profile-form input{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--line);background:#07101A;color:var(--text);padding:0 14px;outline:none}
+    .profile-form input:focus{border-color:var(--blue)}
+    .profile-saved{text-align:center;color:#6FD7A0;font-size:13px;font-weight:800;min-height:18px}
+    .account-card-row{cursor:pointer}
+</style>
 </head>
 <body>
 <div class="app">
@@ -168,7 +175,7 @@
       </div>
 
       <div class="account-card">
-        <div class="account-card-row">
+        <div class="account-card-row" onclick="showProfile()">
           <div class="account-icon">👤</div>
           <div class="account-card-copy">
             <h3>Profile</h3>
@@ -189,6 +196,19 @@
         <div class="total"><span>Total</span><span id="cartTotal">$0.00</span></div>
         <button class="primary" onclick="submitCartOrder()">Continue to Order Form</button>
         <button class="secondary" onclick="showProducts()">Continue Shopping</button>
+      </div>
+    </section>
+
+    <section id="profilePage" class="page">
+      <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
+      <div class="hero"><div class="eyebrow">Profile</div><h1>Your profile.</h1><p>Keep your contact information saved on this device.</p></div>
+      <div class="profile-form">
+        <label>First Name<input id="profileFirst" type="text" autocomplete="given-name" placeholder="First name"></label>
+        <label>Last Name<input id="profileLast" type="text" autocomplete="family-name" placeholder="Last name"></label>
+        <label>Email<input id="profileEmail" type="email" autocomplete="email" placeholder="Email address"></label>
+        <label>Phone Number<input id="profilePhone" type="tel" autocomplete="tel" placeholder="Phone number"></label>
+        <button class="primary" onclick="saveProfile()">Save Profile</button>
+        <div id="profileSaved" class="profile-saved" aria-live="polite"></div>
       </div>
     </section>
 
@@ -332,6 +352,29 @@ function renderCart(){
   const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
   document.getElementById("cartTotal").textContent=money(total);
 }
+function showProfile(){
+  showPage("profilePage");
+  const saved=JSON.parse(localStorage.getItem("sbhProfile")||"{}");
+  document.getElementById("profileFirst").value=saved.first||"";
+  document.getElementById("profileLast").value=saved.last||"";
+  document.getElementById("profileEmail").value=saved.email||"";
+  document.getElementById("profilePhone").value=saved.phone||"";
+  document.getElementById("profileSaved").textContent="";
+}
+function saveProfile(){
+  const profile={
+    first:document.getElementById("profileFirst").value.trim(),
+    last:document.getElementById("profileLast").value.trim(),
+    email:document.getElementById("profileEmail").value.trim(),
+    phone:document.getElementById("profilePhone").value.trim()
+  };
+  localStorage.setItem("sbhProfile",JSON.stringify(profile));
+  document.getElementById("profileSaved").textContent="Profile saved on this device.";
+  const name=[profile.first,profile.last].filter(Boolean).join(" ");
+  const welcome=document.querySelector("#accountPage .account-welcome .welcome-copy");
+  if(welcome){welcome.innerHTML=`<strong>${escapeHTML(name||"Your Science by HUGs account")}</strong><span>${escapeHTML(profile.email||"Profile details saved on this device.")}</span>`;}
+}
+
 function submitCartOrder(){
   if(!cart.length){alert("Your cart is empty.");return;}
   if(cart.length>5){alert("Please limit your order to 5 different products.");return;}
