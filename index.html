@@ -902,9 +902,10 @@ function loadOrders(){
           "Delayed":"delayed",
           "Cancelled":"cancelled"
         }[status]||"pending";
-        return `
-          <div class="account-card" style="margin-bottom:12px">
-            <div class="account-card-row" style="cursor:default">
+return `
+          <div class="account-card" style="margin-bottom:12px;cursor:pointer"
+               onclick="${order.invoicePdf ? `window.open('${escapeHTML(order.invoicePdf)}','_blank')` : ''}">
+            <div class="account-card-row" style="cursor:pointer">
               <div class="account-icon">📄</div>
               <div class="account-card-copy">
                 <h3>${escapeHTML(order.invoiceNumber||"Invoice")}</h3>
