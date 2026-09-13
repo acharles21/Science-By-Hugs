@@ -911,6 +911,7 @@ return `
                 <h3>${escapeHTML(order.invoiceNumber||"Invoice")}</h3>
                 <p>${escapeHTML(date)} · ${escapeHTML(total)}</p>
                 <div class="order-status ${statusClass}">${escapeHTML(status)}</div>
+                ${order.invoicePdf ? `<div style="margin-top:8px;font-size:13px;font-weight:600;opacity:.8">📄 Tap to View Invoice →</div>` : ''}
               </div>
             </div>
           </div>`;
