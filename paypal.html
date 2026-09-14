@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pay with PayPal — Science by HUGs</title>
 
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAW2UnJsd-eCKCVWI6_EhdCQKGou30R_f8bGIy2RsqQ_qKSROiS5wAuuNaH2mruW08Cup2A1mSKrilZVM&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -59,6 +57,7 @@
       border-radius: 18px;
       padding: 22px;
       margin-bottom: 16px;
+      text-align: center;
     }
 
     .payment-card h2 {
@@ -67,14 +66,47 @@
     }
 
     .payment-card p {
-      margin: 0 0 20px;
+      margin: 0 0 24px;
       color: #a9a9b0;
       font-size: 14px;
       line-height: 1.5;
     }
 
     .paypal-button {
-      min-height: 45px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .paypal-button form {
+      display: inline-grid;
+      justify-items: center;
+      align-content: start;
+      gap: 0.5rem;
+    }
+
+    .paypal-button input {
+      text-align: center;
+      border: none;
+      border-radius: 0.25rem;
+      min-width: 11.625rem;
+      padding: 0 2rem;
+      height: 2.625rem;
+      font-weight: bold;
+      background-color: #FFD140;
+      color: #000000;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.25rem;
+      cursor: pointer;
+    }
+
+    .paypal-button img {
+      max-width: 180px;
+    }
+
+    .paypal-button .wordmark {
+      height: 0.875rem;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -97,23 +129,43 @@
       <h2>Pay with PayPal</h2>
 
       <p>
-        Select the appropriate payment option below to continue securely through PayPal.
+        Click below to continue securely to PayPal.
       </p>
 
-      <div
-        id="paypal-container-99BF96EKFWSPA"
-        class="paypal-button"
-      ></div>
+      <div class="paypal-button">
+
+        <form
+          action="https://www.paypal.com/ncp/payment/99BF96EKFWSPA"
+          method="post"
+          target="_blank"
+        >
+
+          <input
+            type="submit"
+            value="Pay Now"
+          />
+
+          <img
+            src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg"
+            alt="Cards accepted"
+          >
+
+          <section style="font-size:0.75rem;">
+            Powered by
+            <img
+              class="wordmark"
+              src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
+              alt="PayPal"
+            >
+          </section>
+
+        </form>
+
+      </div>
 
     </section>
 
   </main>
-
-  <script>
-    paypal.HostedButtons({
-      hostedButtonId: "99BF96EKFWSPA"
-    }).render("#paypal-container-99BF96EKFWSPA");
-  </script>
 
 </body>
 </html>
