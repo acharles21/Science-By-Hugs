@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0b0d">
+  <title>Admin — Science by HUGs</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "SF Pro Text", Arial, sans-serif;
+      background: #0b0b0d;
+      color: #f5f5f7;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 34px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.7px;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: #9d9da5;
+      font-size: 14px;
+    }
+
+    .admin-label {
+      padding: 7px 11px;
+      border: 1px solid #29292e;
+      border-radius: 10px;
+      color: #a9a9b0;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero {
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin-bottom: 7px;
+      color: #9d9da5;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: #9d9da5;
+      font-size: 15px;
+    }
+
+    .section-title {
+      margin: 28px 0 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      display: block;
+      background: #151518;
+      border: 1px solid #29292e;
+      border-radius: 18px;
+      padding: 20px;
+      color: inherit;
+      text-decoration: none;
+      min-height: 135px;
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 13px;
+      background: #222227;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 5px 0 0;
+      color: #8f8f98;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .overview {
+      background: #151518;
+      border: 1px solid #29292e;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .overview-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid #29292e;
+    }
+
+    .overview-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .overview-row:first-child {
+      padding-top: 0;
+    }
+
+    .overview-label {
+      color: #9d9da5;
+      font-size: 14px;
+    }
+
+    .overview-value {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .notice {
+      margin-top: 28px;
+      padding: 17px;
+      border-radius: 15px;
+      background: #151518;
+      border: 1px solid #29292e;
+      color: #8f8f98;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <header class="topbar">
+
+      <div class="brand">
+        <h1>Science by HUGs</h1>
+        <p>Business Management</p>
+      </div>
+
+      <div class="admin-label">
+        ADMIN
+      </div>
+
+    </header>
+
+    <section class="hero">
+
+      <div class="eyebrow">
+        Dashboard
+      </div>
+
+      <h2>Welcome back.</h2>
+
+      <p>
+        Manage your Science by HUGs business from one place.
+      </p>
+
+    </section>
+
+    <div class="section-title">
+      Management
+    </div>
+
+    <section class="grid">
+
+      <a class="card" href="#">
+        <div class="icon">📦</div>
+        <h3>Orders</h3>
+        <p>View and manage customer orders.</p>
+      </a>
+
+      <a class="card" href="#">
+        <div class="icon">👥</div>
+        <h3>Customers</h3>
+        <p>View customer accounts and information.</p>
+      </a>
+
+      <a class="card" href="#">
+        <div class="icon">🧪</div>
+        <h3>Products</h3>
+        <p>Manage your product catalog.</p>
+      </a>
+
+      <a class="card" href="#">
+        <div class="icon">📄</div>
+        <h3>Invoices</h3>
+        <p>View invoices and invoice history.</p>
+      </a>
+
+    </section>
+
+    <div class="section-title">
+      Business
+    </div>
+
+    <section class="grid">
+
+      <a class="card" href="#">
+        <div class="icon">💳</div>
+        <h3>Payments</h3>
+        <p>Track customer payment activity.</p>
+      </a>
+
+      <a class="card" href="#">
+        <div class="icon">🚚</div>
+        <h3>Delivery</h3>
+        <p>Manage delivery status and ETAs.</p>
+      </a>
+
+    </section>
+
+    <div class="section-title">
+      Overview
+    </div>
+
+    <section class="overview">
+
+      <div class="overview-row">
+        <span class="overview-label">Orders</span>
+        <span class="overview-value">—</span>
+      </div>
+
+      <div class="overview-row">
+        <span class="overview-label">Customers</span>
+        <span class="overview-value">—</span>
+      </div>
+
+      <div class="overview-row">
+        <span class="overview-label">Pending Payments</span>
+        <span class="overview-value">—</span>
+      </div>
+
+      <div class="overview-row">
+        <span class="overview-label">Active Deliveries</span>
+        <span class="overview-value">—</span>
+      </div>
+
+    </section>
+
+    <div class="notice">
+      Admin tools are currently under development.
+      Business data and management functions will be connected in future versions.
+    </div>
+
+  </main>
+
+</body>
+</html>
