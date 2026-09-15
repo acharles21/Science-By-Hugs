@@ -665,7 +665,7 @@ function showForgotPassword(){
 
   msg.textContent="Sending reset code…";
 
-  const callback="sbhReset_"+Date.now();
+ const callback="__sbhReset_"+Date.now();
 
   window[callback]=function(data){
     try{
