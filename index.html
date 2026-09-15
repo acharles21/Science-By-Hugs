@@ -726,7 +726,73 @@ function showForgotPassword(){
   if(confirm)confirm.value="";
   if(msg)msg.textContent="";
 }
-  
+  function resetPassword(){
+  const token=document.getElementById("resetToken").value.trim();
+  const password=document.getElementById("newPassword").value;
+  const confirm=document.getElementById("confirmPassword").value;
+  const msg=document.getElementById("resetPasswordMessage");
+
+  if(!token||!password||!confirm){
+    msg.textContent="Please complete all fields.";
+    return;
+  }
+
+  if(password!==confirm){
+    msg.textContent="Passwords do not match.";
+    return;
+  }
+
+  msg.textContent="Resetting your password…";
+
+  const callback="sbhPasswordReset_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=
+          data&&data.error
+            ? data.error
+            : "We could not reset your password. Please try again.";
+        return;
+      }
+
+      msg.textContent="Your password has been reset successfully.";
+
+      setTimeout(()=>showPage("loginPage"),1200);
+
+    }catch(error){
+      msg.textContent=
+        "We could not reset your password. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+
+  script.id=callback;
+
+  script.src=
+    API_URL+
+    "?api=resetPassword"+
+    "&token="+encodeURIComponent(token)+
+    "&password="+encodeURIComponent(password)+
+    "&callback="+callback+
+    "&t="+Date.now();
+
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+
+    msg.textContent=
+      "We could not connect to your account service. Please try again.";
+  };
+
+  document.body.appendChild(script);
+}
 function createAccount(){
   const first=document.getElementById("createFirst").value.trim();
   const last=document.getElementById("createLast").value.trim();
