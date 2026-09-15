@@ -340,6 +340,7 @@
         <label>Last Name<input id="createLast" type="text" autocomplete="family-name" placeholder="Last name"></label>
         <label>Email<input id="createEmail" type="email" autocomplete="email" placeholder="Email address"></label>
         <label>Phone Number<input id="createPhone" type="tel" autocomplete="tel" placeholder="Phone number"></label>
+        <label>Password<input id="createPassword" type="password" autocomplete="new-password" placeholder="Create a password"></label>
         <button class="primary" onclick="createAccount()">Create Account</button>
         <div id="createAccountMessage" class="profile-saved" aria-live="polite"></div>
       </div>
@@ -351,6 +352,7 @@
       <div class="hero"><div class="eyebrow">Log In</div><h1>Welcome back.</h1><p>Enter the email associated with your Science by HUGs account.</p></div>
       <div class="profile-form">
         <label>Email<input id="loginEmail" type="email" autocomplete="email" placeholder="Email address"></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password"></label>
         <button class="primary" onclick="loginAccount()">Log In</button>
         <div id="loginMessage" class="profile-saved" aria-live="polite"></div>
       </div>
@@ -589,9 +591,10 @@ function createAccount(){
   const last=document.getElementById("createLast").value.trim();
   const email=document.getElementById("createEmail").value.trim();
   const phone=document.getElementById("createPhone").value.trim();
+  const password=document.getElementById("createPassword").value;
   const msg=document.getElementById("createAccountMessage");
 
-  if(!first||!last||!email){
+  if(!first||!last||!email||!password){
     msg.textContent="Please enter your first name, last name, and email.";
     return;
   }
@@ -620,7 +623,7 @@ function createAccount(){
 
   const script=document.createElement("script");
   script.id=callback;
-  script.src=API_URL+"?api=createCustomer&first="+encodeURIComponent(first)+"&last="+encodeURIComponent(last)+"&email="+encodeURIComponent(email)+"&phone="+encodeURIComponent(phone)+"&callback="+callback+"&t="+Date.now();
+  script.src=API_URL+"?api=createCustomer&first="+encodeURIComponent(first)+"&last="+encodeURIComponent(last)+"&email="+encodeURIComponent(email)+"&phone="+encodeURIComponent(phone)+"&password="+encodeURIComponent(password)+"&callback="+callback+"&t="+Date.now();
   script.onerror=function(){
     delete window[callback];
     script.remove();
@@ -631,9 +634,9 @@ function createAccount(){
 
 function loginAccount(){
   const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
   const msg=document.getElementById("loginMessage");
-  if(!email){msg.textContent="Please enter your email address.";return;}
-
+  if(!email||!password){msg.textContent="Please enter your email address and password.";return;}
   msg.textContent="Looking up your account…";
 
   const callback="sbhCustomer_"+Date.now();
@@ -663,7 +666,7 @@ function loginAccount(){
 
   const script=document.createElement("script");
   script.id=callback;
-  script.src=API_URL+"?api=customer&email="+encodeURIComponent(email)+"&callback="+callback+"&t="+Date.now();
+  script.src=API_URL+"?api=customer&email="+encodeURIComponent(email)+"&password="+encodeURIComponent(password)+"&callback="+callback+"&t="+Date.now();
   script.onerror=function(){
     delete window[callback];
     script.remove();
