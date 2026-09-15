@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pay — Science by HUGs</title>
-
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAW2UnJsd-eCKCVWI6_EhdCQKGou30R_f8bGIy2RsqQ_qKSROiS5wAuuNaH2mruW08Cup2A1mSKrilZVM&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
+  <title>Payment — Science by HUGs</title>
 
   <style>
     * {
@@ -36,10 +34,6 @@
       margin-bottom: 28px;
     }
 
-    .back:hover {
-      color: #fff;
-    }
-
     .brand {
       text-align: center;
       margin-bottom: 34px;
@@ -57,90 +51,104 @@
       font-size: 16px;
     }
 
-    .payment-card {
+    .payment-option {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      color: inherit;
       background: #151518;
       border: 1px solid #29292e;
       border-radius: 18px;
       padding: 22px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .payment-option:active {
+      transform: scale(0.98);
+    }
+
+    .payment-option:hover {
+      border-color: #45454c;
     }
 
     .payment-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 14px;
     }
 
     .payment-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #222227;
-      font-size: 22px;
+      font-size: 23px;
+      flex-shrink: 0;
     }
 
-    .payment-header h2 {
+    .payment-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .payment-copy h2 {
       margin: 0;
       font-size: 19px;
     }
 
-    .payment-header p {
-      margin: 3px 0 0;
+    .payment-copy p {
+      margin: 4px 0 0;
+      color: #9d9da5;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .arrow {
+      color: #9d9da5;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .payment-detail {
+      margin-top: 16px;
+      padding-top: 15px;
+      border-top: 1px solid #29292e;
+      color: #b8b8c0;
+      font-size: 14px;
+    }
+
+    .payment-detail strong {
+      color: #f5f5f7;
+      font-size: 15px;
+    }
+
+    .zelle-option {
+      cursor: pointer;
+    }
+
+    .copy-label {
+      margin-top: 16px;
+      padding-top: 15px;
+      border-top: 1px solid #29292e;
       color: #9d9da5;
       font-size: 13px;
     }
 
-    .payment-info {
-      color: #b8b8c0;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .username {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin: 8px 0 16px;
-    }
-
-    .button {
-      display: block;
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-      padding: 14px 18px;
-      text-align: center;
-      text-decoration: none;
+    .copy-label strong {
+      color: #f5f5f7;
       font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .venmo-button {
-      background: #008cff;
-      color: white;
-    }
-
-    .copy-button {
-      background: #29292e;
-      color: white;
     }
 
     .copied {
+      display: none;
       margin-top: 10px;
-      text-align: center;
       color: #70d99a;
       font-size: 13px;
-      display: none;
-    }
-
-    .paypal-area {
-      min-height: 45px;
+      font-weight: 600;
     }
 
     .notice {
@@ -174,79 +182,83 @@
       <p>Choose your payment method.</p>
     </div>
 
-    <section class="payment-card">
+    <!-- PayPal -->
+    <a class="payment-option" href="./paypal.html">
 
       <div class="payment-header">
+
         <div class="payment-icon">💙</div>
-        <div>
+
+        <div class="payment-copy">
           <h2>PayPal</h2>
           <p>Secure payment through PayPal</p>
         </div>
+
+        <div class="arrow">›</div>
+
       </div>
 
-      <div class="payment-info">
-        Pay securely using PayPal.
+      <div class="payment-detail">
+        <strong>Pay using PayPal</strong>
       </div>
 
-      <div id="paypal-container-99BF96EKFWSPA" class="paypal-area"></div>
+    </a>
 
-    </section>
-
-    <section class="payment-card">
+    <!-- Venmo -->
+    <a
+      class="payment-option"
+      href="https://venmo.com/u/sciencebyhugs"
+      target="_blank"
+      rel="noopener"
+    >
 
       <div class="payment-header">
+
         <div class="payment-icon">💜</div>
-        <div>
+
+        <div class="payment-copy">
           <h2>Venmo</h2>
           <p>Send your payment through Venmo</p>
         </div>
+
+        <div class="arrow">›</div>
+
       </div>
 
-      <div class="payment-info">
-        Send your payment to:
+      <div class="payment-detail">
+        Send to <strong>@sciencebyhugs</strong>
       </div>
 
-      <div class="username">@sciencebyhugs</div>
+    </a>
 
-      <a
-        class="button venmo-button"
-        href="https://venmo.com/u/sciencebyhugs"
-        target="_blank"
-        rel="noopener"
-      >
-        Open Venmo
-      </a>
-
-    </section>
-
-    <section class="payment-card">
+    <!-- Zelle -->
+    <div
+      class="payment-option zelle-option"
+      onclick="copyZelle()"
+    >
 
       <div class="payment-header">
+
         <div class="payment-icon">🔵</div>
-        <div>
-          <h2>Zelle SPECIAL 5% DISCOUNT</h2>
+
+        <div class="payment-copy">
+          <h2>Zelle</h2>
           <p>Send your payment directly</p>
         </div>
+
+        <div class="arrow">›</div>
+
       </div>
 
-      <div class="payment-info">
-        Send your payment to:
+      <div class="copy-label">
+        Send to <strong>order@sciencebyhugs.com</strong>
       </div>
-
-      <div class="username">order@sciencebyhugs.com</div>
-
-      <button
-        class="button copy-button"
-        onclick="copyZelle()"
-      >
-        Copy Zelle Email
-      </button>
 
       <div id="copied" class="copied">
         ✓ Zelle email copied
       </div>
 
-    </section>
+    </div>
 
     <div class="notice">
       <strong>After you pay</strong><br>
@@ -256,14 +268,11 @@
   </main>
 
   <script>
-    paypal.HostedButtons({
-      hostedButtonId: "99BF96EKFWSPA"
-    }).render("#paypal-container-99BF96EKFWSPA");
-
     function copyZelle() {
       navigator.clipboard.writeText("order@sciencebyhugs.com");
 
       const copied = document.getElementById("copied");
+
       copied.style.display = "block";
 
       setTimeout(function() {

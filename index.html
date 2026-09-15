@@ -892,6 +892,13 @@ function loadOrders(){
       box.innerHTML=invoices.map(order=>{
         const date=order.date?new Date(order.date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"—";
         const total=money(Number(order.total)||0);
+        const deliveryEta=order.deliveryEta
+  ? new Date(order.deliveryEta).toLocaleDateString(undefined,{
+      month:"short",
+      day:"numeric",
+      year:"numeric"
+    })
+  : "";
         const status=String(order.status||"Pending Payment").trim();
         const statusClass={
           "Pending Payment":"pending",
@@ -910,6 +917,7 @@ return `
               <div class="account-card-copy">
                 <h3>${escapeHTML(order.invoiceNumber||"Invoice")}</h3>
                 <p>${escapeHTML(date)} · ${escapeHTML(total)}</p>
+                ${deliveryEta && String(status).toLowerCase() !== "delivered" ? `<p style="margin-top:6px"><strong>Estimated Delivery:</strong> ${escapeHTML(deliveryEta)}</p>` : ''}
                 <div class="order-status ${statusClass}">${escapeHTML(status)}</div>
                 ${order.invoicePdf ? `<div style="margin-top:8px;font-size:13px;font-weight:600;opacity:.8">📄 Tap to View Invoice →</div>` : ''}
               </div>
