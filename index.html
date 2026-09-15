@@ -622,6 +622,64 @@ function showForgotPassword(){
     msg.textContent = "";
   }
 }
+
+  function requestPasswordReset(){
+  const email=document.getElementById("resetEmail").value.trim();
+  const msg=document.getElementById("resetMessage");
+
+  if(!email){
+    msg.textContent="Please enter your email address.";
+    return;
+  }
+
+  msg.textContent="Sending reset code…";
+
+  const callback="sbhReset_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=
+          data&&data.error
+            ? data.error
+            : "We could not send your reset code. Please try again.";
+        return;
+      }
+
+      msg.textContent=
+        "If an account exists for that email, a password reset code has been sent.";
+    }catch(error){
+      msg.textContent=
+        "We could not process your request. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+
+  script.id=callback;
+
+  script.src=
+    API_URL+
+    "?api=requestPasswordReset"+
+    "&email="+encodeURIComponent(email)+
+    "&callback="+callback+
+    "&t="+Date.now();
+
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+
+    msg.textContent=
+      "We could not connect to your account service. Please try again.";
+  };
+
+  document.body.appendChild(script);
+}
   
 function createAccount(){
   const first=document.getElementById("createFirst").value.trim();
