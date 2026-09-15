@@ -368,6 +368,17 @@
     <p>Enter your email and we'll send you a password reset code.</p>
   </div>
 </section>
+      <div class="profile-form">
+    <label>
+      Email
+      <input id="resetEmail" type="email" autocomplete="email" placeholder="Email address">
+    </label>
+
+    <button class="primary" onclick="requestPasswordReset()">Send Reset Code</button>
+
+    <div id="resetMessage" class="profile-saved" aria-live="polite"></div>
+  </div>
+    </section>
       <section id="resetPasswordPage" class="page">
   <button class="back" onclick="showPage('loginPage')">‹ Back to Log In</button>
 
