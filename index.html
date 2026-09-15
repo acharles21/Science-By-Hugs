@@ -360,6 +360,25 @@
       <div class="notice">Your login will be connected to your customer record in the next step.</div>
     </section>
 
+    <section id="forgotPasswordPage" class="page">
+  <button class="back" onclick="showPage('loginPage')">‹ Back to Log In</button>
+  <div class="hero">
+    <div class="eyebrow">Reset Password</div>
+    <h1>Forgot your password?</h1>
+    <p>Enter your email and we'll send you a password reset code.</p>
+  </div>
+
+  <div class="profile-form">
+    <label>
+      Email
+      <input id="resetEmail" type="email" autocomplete="email" placeholder="Email address">
+    </label>
+
+    <button class="primary" onclick="requestPasswordReset()">Send Reset Code</button>
+
+    <div id="resetMessage" class="profile-saved" aria-live="polite"></div>
+  </div>
+</section>
     <section id="profilePage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
       <div class="hero"><div class="eyebrow">Profile</div><h1>Your profile.</h1><p>Keep your contact information saved on this device.</p></div>
@@ -587,6 +606,23 @@ function showLogin(){
   if(msg)msg.textContent="";
 }
 
+function showForgotPassword(){
+  showPage("forgotPasswordPage");
+
+  const saved = getSavedCustomer() || {};
+  const email = document.getElementById("resetEmail");
+
+  if(email){
+    email.value = saved.email || "";
+  }
+
+  const msg = document.getElementById("resetMessage");
+
+  if(msg){
+    msg.textContent = "";
+  }
+}
+  
 function createAccount(){
   const first=document.getElementById("createFirst").value.trim();
   const last=document.getElementById("createLast").value.trim();
