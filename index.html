@@ -354,11 +354,62 @@
         <label>Email<input id="loginEmail" type="email" autocomplete="email" placeholder="Email address"></label>
         <label>Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password"></label>
         <button class="primary" onclick="loginAccount()">Log In</button>
+        <button class="secondary" onclick="showForgotPassword()">Forgot Password?</button>
         <div id="loginMessage" class="profile-saved" aria-live="polite"></div>
       </div>
-      <div class="notice">Passwordless login will be connected to your customer record in the next step.</div>
+      <div class="notice">Your login is connected to your Science by HUGs customer record.</div>
     </section>
 
+    <section id="forgotPasswordPage" class="page">
+      <button class="back" onclick="showPage('loginPage')">‹ Back to Log In</button>
+      <div class="hero">
+        <div class="eyebrow">Reset Password</div>
+        <h1>Forgot your password?</h1>
+        <p>Enter your email and we'll send you a password reset code.</p>
+      </div>
+
+      <div class="profile-form">
+        <label>
+          Email
+          <input id="resetEmail" type="email" autocomplete="email" placeholder="Email address">
+        </label>
+
+        <button class="primary" onclick="requestPasswordReset()">Send Reset Code</button>
+
+        <div id="resetMessage" class="profile-saved" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="resetPasswordPage" class="page">
+  <button class="back" onclick="showPage('loginPage')">‹ Back to Log In</button>
+
+  <div class="hero">
+    <div class="eyebrow">New Password</div>
+    <h1>Reset your password.</h1>
+    <p>Enter the reset code from your email and create a new password.</p>
+  </div>
+
+  <div class="profile-form">
+    <label>
+      Reset Code
+      <input id="resetToken" type="text" autocomplete="one-time-code" placeholder="Paste your reset code">
+    </label>
+
+    <label>
+      New Password
+      <input id="newPassword" type="password" autocomplete="new-password" placeholder="Create a new password">
+    </label>
+
+    <label>
+      Confirm Password
+      <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirm your new password">
+    </label>
+
+    <button class="primary" onclick="resetPassword()">Reset Password</button>
+
+    <div id="resetPasswordMessage" class="profile-saved" aria-live="polite"></div>
+  </div>
+</section>
     <section id="profilePage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
       <div class="hero"><div class="eyebrow">Profile</div><h1>Your profile.</h1><p>Keep your contact information saved on this device.</p></div>
@@ -586,6 +637,162 @@ function showLogin(){
   if(msg)msg.textContent="";
 }
 
+function showForgotPassword(){
+  showPage("forgotPasswordPage");
+
+  const saved = getSavedCustomer() || {};
+  const email = document.getElementById("resetEmail");
+
+  if(email){
+    email.value = saved.email || "";
+  }
+
+  const msg = document.getElementById("resetMessage");
+
+  if(msg){
+    msg.textContent = "";
+  }
+}
+
+  function requestPasswordReset(){
+  const email=document.getElementById("resetEmail").value.trim();
+  const msg=document.getElementById("resetMessage");
+
+  if(!email){
+    msg.textContent="Please enter your email address.";
+    return;
+  }
+
+  msg.textContent="Sending reset code…";
+
+ const callback="__sbhReset_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=
+          data&&data.error
+            ? data.error
+            : "We could not send your reset code. Please try again.";
+        return;
+      }
+
+      msg.textContent=
+        "If an account exists for that email, a password reset code has been sent.";
+      setTimeout(()=>showResetPassword(),800);
+    }catch(error){
+      msg.textContent=
+        "We could not process your request. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+
+  script.id=callback;
+
+  script.src=
+    API_URL+
+    "?api=requestPasswordReset"+
+    "&email="+encodeURIComponent(email)+
+    "&callback="+callback+
+    "&t="+Date.now();
+
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+
+    msg.textContent=
+      "We could not connect to your account service. Please try again.";
+  };
+
+  document.body.appendChild(script);
+}
+
+  function showResetPassword(){
+  showPage("resetPasswordPage");
+
+  const token=document.getElementById("resetToken");
+  const password=document.getElementById("newPassword");
+  const confirm=document.getElementById("confirmPassword");
+  const msg=document.getElementById("resetPasswordMessage");
+
+  if(token)token.value="";
+  if(password)password.value="";
+  if(confirm)confirm.value="";
+  if(msg)msg.textContent="";
+}
+  function resetPassword(){
+  const token=document.getElementById("resetToken").value.trim();
+  const password=document.getElementById("newPassword").value;
+  const confirm=document.getElementById("confirmPassword").value;
+  const msg=document.getElementById("resetPasswordMessage");
+
+  if(!token||!password||!confirm){
+    msg.textContent="Please complete all fields.";
+    return;
+  }
+
+  if(password!==confirm){
+    msg.textContent="Passwords do not match.";
+    return;
+  }
+
+  msg.textContent="Resetting your password…";
+
+  const callback="sbhPasswordReset_"+Date.now();
+
+  window[callback]=function(data){
+    try{
+      delete window[callback];
+
+      const script=document.getElementById(callback);
+      if(script)script.remove();
+
+      if(!data||!data.success){
+        msg.textContent=
+          data&&data.error
+            ? data.error
+            : "We could not reset your password. Please try again.";
+        return;
+      }
+
+      msg.textContent="Your password has been reset successfully.";
+
+      setTimeout(()=>showPage("loginPage"),1200);
+
+    }catch(error){
+      msg.textContent=
+        "We could not reset your password. Please try again.";
+    }
+  };
+
+  const script=document.createElement("script");
+
+  script.id=callback;
+
+  script.src=
+    API_URL+
+    "?api=resetPassword"+
+    "&token="+encodeURIComponent(token)+
+    "&password="+encodeURIComponent(password)+
+    "&callback="+callback+
+    "&t="+Date.now();
+
+  script.onerror=function(){
+    delete window[callback];
+    script.remove();
+
+    msg.textContent=
+      "We could not connect to your account service. Please try again.";
+  };
+
+  document.body.appendChild(script);
+}
 function createAccount(){
   const first=document.getElementById("createFirst").value.trim();
   const last=document.getElementById("createLast").value.trim();
@@ -595,7 +802,7 @@ function createAccount(){
   const msg=document.getElementById("createAccountMessage");
 
   if(!first||!last||!email||!password){
-    msg.textContent="Please enter your first name, last name, and email.";
+    msg.textContent="Please enter your first name, last name, email, and password.";
     return;
   }
 
