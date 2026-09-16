@@ -20,12 +20,116 @@
       min-height: 100vh;
     }
 
+    button,
+    input {
+      font: inherit;
+    }
+
     .page {
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
       padding: 28px 20px 50px;
     }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 390px;
+      background: #151518;
+      border: 1px solid #29292e;
+      border-radius: 22px;
+      padding: 28px;
+    }
+
+    .login-brand {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-brand h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.7px;
+    }
+
+    .login-brand p {
+      margin: 7px 0 0;
+      color: #9d9da5;
+      font-size: 14px;
+    }
+
+    .login-title {
+      margin: 0 0 18px;
+      font-size: 21px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #a9a9b0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1px solid #303036;
+      background: #0f0f12;
+      color: #f5f5f7;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #66666f;
+    }
+
+    .login-button {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border: 0;
+      border-radius: 13px;
+      background: #f5f5f7;
+      color: #0b0b0d;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .login-button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .login-message {
+      min-height: 20px;
+      margin-top: 14px;
+      text-align: center;
+      color: #9d9da5;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* DASHBOARD */
 
     .topbar {
       display: flex;
@@ -177,6 +281,17 @@
       text-align: center;
     }
 
+    .logout {
+      margin-top: 24px;
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #29292e;
+      border-radius: 13px;
+      background: transparent;
+      color: #a9a9b0;
+      cursor: pointer;
+    }
+
     @media (max-width: 520px) {
       .grid {
         grid-template-columns: 1fr;
@@ -187,7 +302,61 @@
 
 <body>
 
-  <main class="page">
+  <!-- ADMIN LOGIN -->
+
+  <section id="loginPage" class="login-page">
+
+    <div class="login-card">
+
+      <div class="login-brand">
+        <h1>Science by HUGs</h1>
+        <p>Business Management</p>
+      </div>
+
+      <h2 class="login-title">Admin Login</h2>
+
+      <form id="loginForm">
+
+        <div class="field">
+          <label for="adminEmail">Email</label>
+          <input
+            id="adminEmail"
+            type="email"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="adminPassword">Password</label>
+          <input
+            id="adminPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button
+          id="loginButton"
+          class="login-button"
+          type="submit"
+        >
+          Log In
+        </button>
+
+      </form>
+
+      <div id="loginMessage" class="login-message"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADMIN DASHBOARD -->
+
+  <main id="dashboardPage" class="page hidden">
 
     <header class="topbar">
 
@@ -208,7 +377,7 @@
         Dashboard
       </div>
 
-      <h2>Welcome back.</h2>
+      <h2 id="welcomeText">Welcome back.</h2>
 
       <p>
         Manage your Science by HUGs business from one place.
@@ -296,12 +465,194 @@
 
     </section>
 
+    <button id="logoutButton" class="logout">
+      Log Out
+    </button>
+
     <div class="notice">
       Admin tools are currently under development.
       Business data and management functions will be connected in future versions.
     </div>
 
   </main>
+
+
+  <script>
+
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec';
+
+
+    function showDashboard(admin) {
+
+      document.getElementById('loginPage')
+        .classList.add('hidden');
+
+      document.getElementById('dashboardPage')
+        .classList.remove('hidden');
+
+      document.getElementById('welcomeText').textContent =
+        'Welcome back, ' + admin.firstName + '.';
+
+      sessionStorage.setItem(
+        'sbhAdmin',
+        JSON.stringify(admin)
+      );
+    }
+
+
+    function showLogin() {
+
+      document.getElementById('dashboardPage')
+        .classList.add('hidden');
+
+      document.getElementById('loginPage')
+        .classList.remove('hidden');
+
+      document.getElementById('adminPassword').value = '';
+    }
+
+
+    function adminLogin(email, password) {
+
+      const callback =
+        '__sbhAdminLogin_' + Date.now();
+
+      window[callback] = function(data) {
+
+        const button =
+          document.getElementById('loginButton');
+
+        const message =
+          document.getElementById('loginMessage');
+
+        button.disabled = false;
+        button.textContent = 'Log In';
+
+        if (data && data.success) {
+
+          showDashboard(data.admin);
+
+        } else {
+
+          message.textContent =
+            (data && data.message)
+              ? data.message
+              : 'Unable to log in.';
+
+        }
+
+        delete window[callback];
+        script.remove();
+
+      };
+
+
+      const script =
+        document.createElement('script');
+
+      script.src =
+        API_URL +
+        '?api=adminLogin' +
+        '&email=' +
+        encodeURIComponent(email) +
+        '&password=' +
+        encodeURIComponent(password) +
+        '&callback=' +
+        callback +
+        '&t=' +
+        Date.now();
+
+      script.onerror = function() {
+
+        document.getElementById('loginButton')
+          .disabled = false;
+
+        document.getElementById('loginButton')
+          .textContent = 'Log In';
+
+        document.getElementById('loginMessage')
+          .textContent =
+            'We could not connect to the admin service.';
+
+        delete window[callback];
+        script.remove();
+
+      };
+
+      document.body.appendChild(script);
+    }
+
+
+    document.getElementById('loginForm')
+      .addEventListener('submit', function(event) {
+
+        event.preventDefault();
+
+        const email =
+          document.getElementById('adminEmail')
+            .value.trim();
+
+        const password =
+          document.getElementById('adminPassword')
+            .value;
+
+        const button =
+          document.getElementById('loginButton');
+
+        const message =
+          document.getElementById('loginMessage');
+
+        message.textContent = '';
+
+        button.disabled = true;
+        button.textContent = 'Logging In…';
+
+        adminLogin(email, password);
+
+      });
+
+
+    document.getElementById('logoutButton')
+      .addEventListener('click', function() {
+
+        sessionStorage.removeItem('sbhAdmin');
+
+        showLogin();
+
+      });
+
+
+    (function initializeAdmin() {
+
+      const saved =
+        sessionStorage.getItem('sbhAdmin');
+
+      if (saved) {
+
+        try {
+
+          const admin =
+            JSON.parse(saved);
+
+          if (admin && admin.email) {
+            showDashboard(admin);
+            return;
+          }
+
+        } catch (error) {
+
+          sessionStorage.removeItem('sbhAdmin');
+
+        }
+
+      }
+
+      showLogin();
+
+    })();
+
+  </script>
 
 </body>
 </html>
