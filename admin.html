@@ -1096,6 +1096,27 @@ function closeProducts() {
     .classList.remove('hidden');
 }
 
+    function openMessageTemplates() {
+
+  document.getElementById('dashboardPage')
+    .classList.add('hidden');
+
+  document.getElementById('messageTemplatesPage')
+    .classList.remove('hidden');
+
+}
+
+
+function closeMessageTemplates() {
+
+  document.getElementById('messageTemplatesPage')
+    .classList.add('hidden');
+
+  document.getElementById('dashboardPage')
+    .classList.remove('hidden');
+
+}
+    
     function loadAdminProducts() {
 
   const callback =
