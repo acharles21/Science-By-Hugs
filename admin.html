@@ -1235,8 +1235,11 @@ function saveCustomerChanges() {
   document.getElementById('customerDetailsStatus')
     .textContent = accountStatus;
 
-  message.textContent =
-    'Customer updated successfully.';
+document.getElementById('customerEditPage')
+  .classList.add('hidden');
+
+document.getElementById('customerDetailsPage')
+  .classList.remove('hidden');
 
 } else {
 
