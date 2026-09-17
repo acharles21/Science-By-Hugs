@@ -443,27 +443,27 @@
 
     <section class="overview">
 
-      <div class="overview-row">
-        <span class="overview-label">Orders</span>
-        <span class="overview-value">—</span>
-      </div>
+  <div class="overview-row">
+    <span class="overview-label">Orders</span>
+    <span id="overviewOrders" class="overview-value">—</span>
+  </div>
 
-      <div class="overview-row">
-        <span class="overview-label">Customers</span>
-        <span class="overview-value">—</span>
-      </div>
+  <div class="overview-row">
+    <span class="overview-label">Customers</span>
+    <span id="overviewCustomers" class="overview-value">—</span>
+  </div>
 
-      <div class="overview-row">
-        <span class="overview-label">Pending Payments</span>
-        <span class="overview-value">—</span>
-      </div>
+  <div class="overview-row">
+    <span class="overview-label">Pending Payments</span>
+    <span id="overviewPendingPayments" class="overview-value">—</span>
+  </div>
 
-      <div class="overview-row">
-        <span class="overview-label">Active Deliveries</span>
-        <span class="overview-value">—</span>
-      </div>
+  <div class="overview-row">
+    <span class="overview-label">Active Deliveries</span>
+    <span id="overviewActiveDeliveries" class="overview-value">—</span>
+  </div>
 
-    </section>
+</section>
 
     <button id="logoutButton" class="logout">
       Log Out
@@ -494,10 +494,13 @@
       document.getElementById('welcomeText').textContent =
         'Welcome back, ' + admin.firstName + '.';
 
+      
       sessionStorage.setItem(
         'sbhAdmin',
         JSON.stringify(admin)
       );
+
+      loadAdminOverview();
     }
 
 
@@ -622,7 +625,55 @@
 
       });
 
+function loadAdminOverview() {
 
+  const callback =
+    '__sbhAdminOverview_' + Date.now();
+
+  window[callback] = function(data) {
+
+    if (data && data.success) {
+
+      document.getElementById('overviewOrders')
+        .textContent = data.orders;
+
+      document.getElementById('overviewCustomers')
+        .textContent = data.customers;
+
+      document.getElementById('overviewPendingPayments')
+        .textContent = data.pendingPayments;
+
+      document.getElementById('overviewActiveDeliveries')
+        .textContent = data.activeDeliveries;
+
+    }
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=adminOverview' +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  document.body.appendChild(script);
+}
+    
     (function initializeAdmin() {
 
       const saved =
