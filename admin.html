@@ -302,6 +302,29 @@
 
 <body>
 
+  <section id="ordersPage" class="page hidden">
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>Science by HUGs</h1>
+      <p>Orders</p>
+    </div>
+
+    <button class="admin-label" onclick="closeOrders()">
+      Back
+    </button>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Management</div>
+    <h2>Orders</h2>
+    <p>View and manage customer orders.</p>
+  </section>
+
+  <div id="ordersList"></div>
+
+</section>
+  
   <!-- ADMIN LOGIN -->
 
   <section id="loginPage" class="login-page">
@@ -391,11 +414,11 @@
 
     <section class="grid">
 
-      <a class="card" href="#">
-        <div class="icon">📦</div>
-        <h3>Orders</h3>
-        <p>View and manage customer orders.</p>
-      </a>
+      <a class="card" href="#" onclick="openOrders(); return false;">
+  <div class="icon">📦</div>
+  <h3>Orders</h3>
+  <p>View and manage customer orders.</p>
+</a>
 
       <a class="card" href="#">
         <div class="icon">👥</div>
@@ -487,7 +510,134 @@
     const API_URL =
       'https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec';
 
+function openOrders() {
 
+  document.getElementById('dashboardPage')
+    .classList.add('hidden');
+
+  document.getElementById('ordersPage')
+    .classList.remove('hidden');
+
+  loadAdminOrders();
+}
+
+
+function closeOrders() {
+
+  document.getElementById('ordersPage')
+    .classList.add('hidden');
+
+  document.getElementById('dashboardPage')
+    .classList.remove('hidden');
+}
+
+
+function loadAdminOrders() {
+
+  const callback =
+    '__sbhAdminOrders_' + Date.now();
+
+  window[callback] = function(data) {
+
+    const container =
+      document.getElementById('ordersList');
+
+    if (!data || !data.success) {
+
+      container.innerHTML =
+        '<div class="notice">Unable to load orders.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    if (!data.orders || !data.orders.length) {
+
+      container.innerHTML =
+        '<div class="notice">No orders found.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    container.innerHTML =
+      data.orders.map(function(order) {
+
+        return `
+          <div class="card" style="margin-bottom:12px;">
+
+            <div style="display:flex;justify-content:space-between;gap:12px;">
+
+              <div>
+                <h3>${escapeHtml(order.invoiceNumber)}</h3>
+                <p>${escapeHtml(order.customer)}</p>
+              </div>
+
+              <div style="text-align:right;">
+                <strong>$${Number(order.total || 0).toFixed(2)}</strong>
+                <p>${escapeHtml(order.status)}</p>
+              </div>
+
+            </div>
+
+            <p>
+              ${escapeHtml(order.email)}
+            </p>
+
+            ${
+              order.invoicePdf
+                ? `<a href="${escapeHtml(order.invoicePdf)}" target="_blank">View Invoice PDF</a>`
+                : ''
+            }
+
+          </div>
+        `;
+
+      }).join('');
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=adminOrders' +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    document.getElementById('ordersList').innerHTML =
+      '<div class="notice">We could not connect to the order service.</div>';
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  document.body.appendChild(script);
+}
+
+
+function escapeHtml(value) {
+
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+}
     function showDashboard(admin) {
 
       document.getElementById('loginPage')
