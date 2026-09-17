@@ -1066,6 +1066,99 @@ function closeProducts() {
   document.getElementById('dashboardPage')
     .classList.remove('hidden');
 }
+
+    function loadAdminProducts() {
+
+  const callback =
+    '__sbhAdminProducts_' + Date.now();
+
+  window[callback] = function(data) {
+
+    const container =
+      document.getElementById('productsList');
+
+    if (!data || !data.success) {
+
+      container.innerHTML =
+        '<div class="notice">Unable to load products.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    if (!data.products || !data.products.length) {
+
+      container.innerHTML =
+        '<div class="notice">No products found.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    container.innerHTML =
+      data.products.map(function(product) {
+
+        return `
+          <div
+            class="card"
+            style="margin-bottom:12px;"
+          >
+
+            <h3>
+              ${escapeHtml(product.product)}
+            </h3>
+
+            <p>
+              ${escapeHtml(product.category)}
+            </p>
+
+            <p>
+              $${Number(product.price || 0).toFixed(2)}
+            </p>
+
+            <p>
+              Status: ${escapeHtml(product.status)}
+            </p>
+
+            <p>
+              Featured: ${escapeHtml(product.featured)}
+            </p>
+
+          </div>
+        `;
+
+      }).join('');
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=adminProducts' +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    document.getElementById('productsList').innerHTML =
+      '<div class="notice">We could not connect to the product service.</div>';
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  document.body.appendChild(script);
+}
     function openCustomerDetails(customer) {
       window.currentCustomer = customer;
 
