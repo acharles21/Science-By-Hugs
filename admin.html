@@ -1216,13 +1216,19 @@ function saveCustomerChanges() {
 
     if (data && data.success) {
 
-      customer.membership = membership;
-      customer.accountStatus = accountStatus;
+  customer.membership = membership;
+  customer.accountStatus = accountStatus;
 
-      message.textContent =
-        'Customer updated successfully.';
+  document.getElementById('customerDetailsMembership')
+    .textContent = membership;
 
-    } else {
+  document.getElementById('customerDetailsStatus')
+    .textContent = accountStatus;
+
+  message.textContent =
+    'Customer updated successfully.';
+
+} else {
 
       message.textContent =
         (data && data.error)
