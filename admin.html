@@ -1174,6 +1174,16 @@ function closeCustomerDetails() {
     .classList.remove('hidden');
 
 }
+
+    function closeCustomerEdit() {
+
+  document.getElementById('customerEditPage')
+    .classList.add('hidden');
+
+  document.getElementById('customerDetailsPage')
+    .classList.remove('hidden');
+
+}
 function saveCustomerChanges() {
 
   const customer = window.currentCustomer;
