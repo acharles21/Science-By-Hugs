@@ -1226,7 +1226,29 @@ function openNewMessageTemplate() {
   document.getElementById('templateEditMessage').textContent = '';
   
 }
+function openEditMessageTemplate(template) {
 
+  document.getElementById('messageTemplatesPage')
+    .classList.add('hidden');
+
+  document.getElementById('messageTemplateEditPage')
+    .classList.remove('hidden');
+
+  document.getElementById('templateName').value =
+    template.templateName || '';
+
+  document.getElementById('templateMessage').value =
+    template.message || '';
+
+  document.getElementById('templateEditMessage').textContent = '';
+
+  document.querySelector('#messageTemplateEditPage .brand p')
+    .textContent = 'Edit Template';
+
+  document.querySelector('#messageTemplateEditPage .hero h2')
+    .textContent = 'Edit Message Template';
+
+}
 function closeMessageTemplateEdit() {
 
   document.getElementById('messageTemplateEditPage')
