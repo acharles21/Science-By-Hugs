@@ -1019,6 +1019,7 @@ function closeCustomers() {
 }
 
     function openCustomerDetails(customer) {
+      window.currentCustomer = customer;
 
   document.getElementById('customersPage')
     .classList.add('hidden');
@@ -1173,7 +1174,97 @@ function closeCustomerDetails() {
     .classList.remove('hidden');
 
 }
-    
+function saveCustomerChanges() {
+
+  const customer = window.currentCustomer;
+
+  if (!customer || !customer.customerId) {
+    document.getElementById('customerEditMessage').textContent =
+      'Customer information is unavailable.';
+    return;
+  }
+
+  const membership =
+    document.getElementById('editMembership').value;
+
+  const accountStatus =
+    document.getElementById('editAccountStatus').value;
+
+  if (!membership || !accountStatus) {
+    document.getElementById('customerEditMessage').textContent =
+      'Please select a membership and account status.';
+    return;
+  }
+
+  const button =
+    document.getElementById('saveCustomerButton');
+
+  const message =
+    document.getElementById('customerEditMessage');
+
+  button.disabled = true;
+  button.textContent = 'Saving…';
+  message.textContent = '';
+
+  const callback =
+    '__sbhUpdateCustomer_' + Date.now();
+
+  window[callback] = function(data) {
+
+    button.disabled = false;
+    button.textContent = 'Save Changes';
+
+    if (data && data.success) {
+
+      customer.membership = membership;
+      customer.accountStatus = accountStatus;
+
+      message.textContent =
+        'Customer updated successfully.';
+
+    } else {
+
+      message.textContent =
+        (data && data.error)
+          ? data.error
+          : 'Unable to update customer.';
+    }
+
+    delete window[callback];
+    script.remove();
+  };
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=updateAdminCustomer' +
+    '&customerId=' +
+    encodeURIComponent(customer.customerId) +
+    '&membership=' +
+    encodeURIComponent(membership) +
+    '&accountStatus=' +
+    encodeURIComponent(accountStatus) +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    button.disabled = false;
+    button.textContent = 'Save Changes';
+
+    message.textContent =
+      'We could not connect to the customer service.';
+
+    delete window[callback];
+    script.remove();
+  };
+
+  document.body.appendChild(script);
+}    
 function escapeHtml(value) {
 
   return String(value || '')
