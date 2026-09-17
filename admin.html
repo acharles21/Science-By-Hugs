@@ -1164,6 +1164,16 @@ function closeCustomerDetails() {
   document.body.appendChild(script);
 }
 
+    function openCustomerEdit() {
+
+  document.getElementById('customerDetailsPage')
+    .classList.add('hidden');
+
+  document.getElementById('customerEditPage')
+    .classList.remove('hidden');
+
+}
+    
 function escapeHtml(value) {
 
   return String(value || '')
