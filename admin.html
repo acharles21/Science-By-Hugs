@@ -1273,11 +1273,12 @@ function closeMessageTemplateEdit() {
   const status =
     document.getElementById('templateEditMessage');
 
-  if (!name || !message) {
+  const editingTemplate =
+    window.currentMessageTemplate;
 
+  if (!name || !message) {
     status.textContent =
       'Please enter a template name and message.';
-
     return;
   }
 
@@ -1285,8 +1286,17 @@ function closeMessageTemplateEdit() {
   button.textContent = 'Saving…';
   status.textContent = '';
 
+  const isEditing =
+    editingTemplate &&
+    editingTemplate.templateId;
+
+  const api =
+    isEditing
+      ? 'updateAdminMessageTemplate'
+      : 'createAdminMessageTemplate';
+
   const callback =
-    '__sbhCreateMessageTemplate_' + Date.now();
+    '__sbhSaveMessageTemplate_' + Date.now();
 
   window[callback] = function(data) {
 
@@ -1296,7 +1306,11 @@ function closeMessageTemplateEdit() {
     if (data && data.success) {
 
       status.textContent =
-        'Template saved successfully.';
+        isEditing
+          ? 'Template updated successfully.'
+          : 'Template saved successfully.';
+
+      window.currentMessageTemplate = null;
 
       setTimeout(function() {
 
@@ -1305,6 +1319,14 @@ function closeMessageTemplateEdit() {
 
         document.getElementById('messageTemplatesPage')
           .classList.remove('hidden');
+
+        document.querySelector(
+          '#messageTemplateEditPage .brand p'
+        ).textContent = 'New Template';
+
+        document.querySelector(
+          '#messageTemplateEditPage .hero h2'
+        ).textContent = 'New Message Template';
 
         loadAdminMessageTemplates();
 
@@ -1327,7 +1349,17 @@ function closeMessageTemplateEdit() {
 
   script.src =
     API_URL +
-    '?api=createAdminMessageTemplate' +
+    '?api=' + api;
+
+  if (isEditing) {
+
+    script.src +=
+      '&templateId=' +
+      encodeURIComponent(editingTemplate.templateId);
+
+  }
+
+  script.src +=
     '&templateName=' +
     encodeURIComponent(name) +
     '&message=' +
