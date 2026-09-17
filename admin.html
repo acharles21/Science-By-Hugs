@@ -301,7 +301,74 @@
 </head>
 
 <body>
+<section id="orderDetailsPage" class="page hidden">
 
+  <header class="topbar">
+
+    <div class="brand">
+      <h1>Science by HUGs</h1>
+      <p>Order Details</p>
+    </div>
+
+    <button class="admin-label" onclick="closeOrderDetails()">
+      Back
+    </button>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="eyebrow">
+      Order
+    </div>
+
+    <h2 id="orderDetailsNumber">Order</h2>
+
+    <p>
+      View order information.
+    </p>
+
+  </section>
+
+  <section class="overview">
+
+    <div class="overview-row">
+      <span class="overview-label">Order Date</span>
+      <span id="orderDetailsDate" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Total</span>
+      <span id="orderDetailsTotal" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Status</span>
+      <span id="orderDetailsStatus" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Delivery Date</span>
+      <span id="orderDetailsDelivery" class="overview-value">—</span>
+    </div>
+
+  </section>
+
+  <div style="margin-top:16px;">
+
+    <a
+      id="orderInvoiceButton"
+      class="card"
+      href="#"
+      target="_blank"
+      style="text-align:center; min-height:auto;"
+    >
+      🧾 View Invoice
+    </a>
+
+  </div>
+
+</section>
   <section id="ordersPage" class="page hidden">
 
   <header class="topbar">
@@ -509,7 +576,82 @@
 
     const API_URL =
       'https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec';
+function openOrderDetails(order) {
 
+  document.getElementById('ordersPage')
+    .classList.add('hidden');
+
+  document.getElementById('orderDetailsPage')
+    .classList.remove('hidden');
+
+  document.getElementById('orderDetailsNumber')
+    .textContent = order.invoiceNumber || 'Order';
+
+  document.getElementById('orderDetailsDate')
+    .textContent = formatAdminDate(order.date);
+
+  document.getElementById('orderDetailsTotal')
+    .textContent =
+      '$' + Number(order.total || 0).toFixed(2);
+
+  document.getElementById('orderDetailsStatus')
+    .textContent = order.status || '—';
+
+  document.getElementById('orderDetailsDelivery')
+    .textContent =
+      order.deliveryEta || 'Not scheduled';
+
+  const invoiceButton =
+    document.getElementById('orderInvoiceButton');
+
+  if (order.invoicePdf) {
+
+    invoiceButton.href = order.invoicePdf;
+    invoiceButton.style.display = 'block';
+
+  } else {
+
+    invoiceButton.removeAttribute('href');
+    invoiceButton.style.display = 'block';
+    invoiceButton.textContent = '🧾 Invoice Not Available';
+
+  }
+}
+
+
+function closeOrderDetails() {
+
+  document.getElementById('orderDetailsPage')
+    .classList.add('hidden');
+
+  document.getElementById('ordersPage')
+    .classList.remove('hidden');
+
+}
+
+
+function formatAdminDate(value) {
+
+  if (!value) {
+    return '—';
+  }
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleDateString(
+    'en-US',
+    {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }
+  );
+}
+    
 function openOrders() {
 
   document.getElementById('dashboardPage')
