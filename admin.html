@@ -1427,9 +1427,30 @@ function closeMessageTemplateEdit() {
       ${escapeHtml(template.templateName)}
     </h3>
 
-    <p style="white-space:pre-wrap;">
-      ${escapeHtml(template.message)}
-    </p>
+    <div
+      style="
+        margin-top:12px;
+        padding:12px;
+        border:1px solid rgba(255,255,255,0.12);
+        border-radius:10px;
+        cursor:pointer;
+      "
+      onclick='openMessagePopup(${JSON.stringify(template).replace(/'/g, "&#39;")})'
+    >
+      <p style="margin:0; color:inherit;">
+        ${escapeHtml(template.message)}
+      </p>
+
+      <p
+        style="
+          margin:8px 0 0;
+          font-size:12px;
+          opacity:0.65;
+        "
+      >
+        Tap to view & copy
+      </p>
+    </div>
 
     <button
       class="login-button"
@@ -1471,6 +1492,133 @@ function closeMessageTemplateEdit() {
   };
 
   document.body.appendChild(script);
+}
+
+function openMessagePopup(template) {
+
+  const message =
+    template && template.message
+      ? template.message
+      : '';
+
+  const popup =
+    document.createElement('div');
+
+  popup.id = 'messagePopup';
+
+  popup.innerHTML = `
+    <div
+      style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.7);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+        z-index:9999;
+      "
+      onclick="closeMessagePopup()"
+    >
+
+      <div
+        class="card"
+        style="
+          width:100%;
+          max-width:600px;
+          max-height:80vh;
+          overflow:auto;
+        "
+        onclick="event.stopPropagation()"
+      >
+
+        <h3>
+          ${escapeHtml(template.templateName || 'Message')}
+        </h3>
+
+        <div
+          style="
+            margin-top:16px;
+            padding:16px;
+            border:1px solid rgba(255,255,255,0.12);
+            border-radius:10px;
+            white-space:pre-wrap;
+          "
+        >
+          ${escapeHtml(message)}
+        </div>
+
+        <button
+          class="login-button"
+          style="margin-top:16px;"
+          onclick="copyMessagePopup()"
+        >
+          📋 Copy Message
+        </button>
+
+        <button
+          class="admin-label"
+          style="margin-top:10px;"
+          onclick="closeMessagePopup()"
+        >
+          Close
+        </button>
+
+        <div
+          id="messagePopupStatus"
+          style="margin-top:10px;text-align:center;"
+        ></div>
+
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  window.currentPopupMessage = message;
+}  
+
+function copyMessagePopup() {
+
+  const message =
+    window.currentPopupMessage || '';
+
+  navigator.clipboard.writeText(message)
+    .then(function() {
+
+      const status =
+        document.getElementById('messagePopupStatus');
+
+      if (status) {
+        status.textContent =
+          'Message copied!';
+      }
+
+    })
+    .catch(function() {
+
+      const status =
+        document.getElementById('messagePopupStatus');
+
+      if (status) {
+        status.textContent =
+          'Unable to copy message.';
+      }
+
+    });
+}
+
+    function closeMessagePopup() {
+
+  const popup =
+    document.getElementById('messagePopup');
+
+  if (popup) {
+    popup.remove();
+  }
+
+  window.currentPopupMessage = null;
 }
     
     function loadAdminProducts() {
