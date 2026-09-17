@@ -369,6 +369,35 @@
   </div>
 
 </section>
+  <section id="customersPage" class="page hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <h1>Science by HUGs</h1>
+      <p>Customers</p>
+    </div>
+
+    <button class="admin-label" onclick="closeCustomers()">
+      Back
+    </button>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="eyebrow">Management</div>
+
+    <h2>Customers</h2>
+
+    <p>View customer accounts and information.</p>
+
+  </section>
+
+  <div id="customersList"></div>
+
+</section>
+  
   <section id="ordersPage" class="page hidden">
 
   <header class="topbar">
@@ -782,6 +811,121 @@ function loadAdminOrders() {
   document.body.appendChild(script);
 }
 
+    function openCustomers() {
+
+  document.getElementById('dashboardPage')
+    .classList.add('hidden');
+
+  document.getElementById('customersPage')
+    .classList.remove('hidden');
+
+  loadAdminCustomers();
+}
+
+
+function closeCustomers() {
+
+  document.getElementById('customersPage')
+    .classList.add('hidden');
+
+  document.getElementById('dashboardPage')
+    .classList.remove('hidden');
+}
+
+    function loadAdminCustomers() {
+
+  const callback =
+    '__sbhAdminCustomers_' + Date.now();
+
+  window[callback] = function(data) {
+
+    const container =
+      document.getElementById('customersList');
+
+    if (!data || !data.success) {
+
+      container.innerHTML =
+        '<div class="notice">Unable to load customers.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    if (!data.customers || !data.customers.length) {
+
+      container.innerHTML =
+        '<div class="notice">No customers found.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    container.innerHTML =
+      data.customers.map(function(customer) {
+
+        return `
+          <div
+            class="card"
+            style="margin-bottom:12px; cursor:pointer;"
+          >
+
+            <h3>
+              ${escapeHtml(customer.firstName)}
+              ${escapeHtml(customer.lastName)}
+            </h3>
+
+            <p>
+              ${escapeHtml(customer.email)}
+            </p>
+
+            <p>
+              ${escapeHtml(customer.phone)}
+            </p>
+
+            <p>
+              Membership: ${escapeHtml(customer.membership)}
+            </p>
+
+            <p>
+              Status: ${escapeHtml(customer.accountStatus)}
+            </p>
+
+          </div>
+        `;
+
+      }).join('');
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=adminCustomers' +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    document.getElementById('customersList').innerHTML =
+      '<div class="notice">We could not connect to the customer service.</div>';
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  document.body.appendChild(script);
+}
 
 function escapeHtml(value) {
 
