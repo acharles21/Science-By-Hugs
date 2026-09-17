@@ -566,8 +566,12 @@ function loadAdminOrders() {
       data.orders.map(function(order) {
 
         return `
-          <div class="card" style="margin-bottom:12px;">
-
+          <div
+            class="card"
+            style="margin-bottom:12px; cursor:pointer;"
+            onclick='openOrderDetails(${JSON.stringify(order).replace(/'/g, "&#39;")})'
+          >
+          
             <div style="display:flex;justify-content:space-between;gap:12px;">
 
               <div>
