@@ -1224,8 +1224,19 @@ function openNewMessageTemplate() {
   document.getElementById('templateName').value = '';
   document.getElementById('templateMessage').value = '';
   document.getElementById('templateEditMessage').textContent = '';
+  
+}
+
+function closeMessageTemplateEdit() {
+
+  document.getElementById('messageTemplateEditPage')
+    .classList.add('hidden');
+
+  document.getElementById('messageTemplatesPage')
+    .classList.remove('hidden');
 
 }
+    
    function saveMessageTemplate() {
 
   const name =
