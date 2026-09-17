@@ -1103,7 +1103,7 @@ function closeProducts() {
 
   document.getElementById('messageTemplatesPage')
     .classList.remove('hidden');
-
+  loadAdminMessageTemplates();
 }
 
 
@@ -1115,6 +1115,87 @@ function closeMessageTemplates() {
   document.getElementById('dashboardPage')
     .classList.remove('hidden');
 
+}
+
+    function loadAdminMessageTemplates() {
+
+  const callback =
+    '__sbhAdminMessageTemplates_' + Date.now();
+
+  window[callback] = function(data) {
+
+    const container =
+      document.getElementById('messageTemplatesList');
+
+    if (!data || !data.success) {
+
+      container.innerHTML =
+        '<div class="notice">Unable to load message templates.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    if (!data.templates || !data.templates.length) {
+
+      container.innerHTML =
+        '<div class="notice">No message templates found.</div>';
+
+      delete window[callback];
+      script.remove();
+      return;
+    }
+
+    container.innerHTML =
+      data.templates.map(function(template) {
+
+        return `
+          <div
+            class="card"
+            style="margin-bottom:12px;"
+          >
+
+            <h3>
+              ${escapeHtml(template.templateName)}
+            </h3>
+
+            <p style="white-space:pre-wrap;">
+              ${escapeHtml(template.message)}
+            </p>
+
+          </div>
+        `;
+
+      }).join('');
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=adminMessageTemplates' +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    document.getElementById('messageTemplatesList').innerHTML =
+      '<div class="notice">We could not connect to the message template service.</div>';
+
+    delete window[callback];
+    script.remove();
+
+  };
+
+  document.body.appendChild(script);
 }
     
     function loadAdminProducts() {
