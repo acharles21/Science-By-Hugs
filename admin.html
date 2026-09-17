@@ -369,6 +369,72 @@
   </div>
 
 </section>
+  <section id="customerDetailsPage" class="page hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <h1>Science by HUGs</h1>
+      <p>Customer Details</p>
+    </div>
+
+    <button class="admin-label" onclick="closeCustomerDetails()">
+      Back
+    </button>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="eyebrow">Customer</div>
+
+    <h2 id="customerDetailsName">Customer</h2>
+
+    <p id="customerDetailsEmail">—</p>
+
+  </section>
+
+  <section class="overview">
+
+    <div class="overview-row">
+      <span class="overview-label">Phone</span>
+      <span id="customerDetailsPhone" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Membership</span>
+      <span id="customerDetailsMembership" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Account Status</span>
+      <span id="customerDetailsStatus" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Created</span>
+      <span id="customerDetailsCreated" class="overview-value">—</span>
+    </div>
+
+    <div class="overview-row">
+      <span class="overview-label">Last Login</span>
+      <span id="customerDetailsLastLogin" class="overview-value">—</span>
+    </div>
+
+  </section>
+
+  <div style="margin-top:16px;">
+
+    <button
+      class="card"
+      style="width:100%; text-align:center; min-height:auto; cursor:pointer;"
+    >
+      ✏️ Edit Customer
+    </button>
+
+  </div>
+
+</section>
   <section id="customersPage" class="page hidden">
 
   <header class="topbar">
@@ -832,6 +898,56 @@ function closeCustomers() {
     .classList.remove('hidden');
 }
 
+    function openCustomerDetails(customer) {
+
+  document.getElementById('customersPage')
+    .classList.add('hidden');
+
+  document.getElementById('customerDetailsPage')
+    .classList.remove('hidden');
+
+  document.getElementById('customerDetailsName')
+    .textContent =
+      (customer.firstName || '') + ' ' +
+      (customer.lastName || '');
+
+  document.getElementById('customerDetailsEmail')
+    .textContent =
+      customer.email || '—';
+
+  document.getElementById('customerDetailsPhone')
+    .textContent =
+      customer.phone || '—';
+
+  document.getElementById('customerDetailsMembership')
+    .textContent =
+      customer.membership || '—';
+
+  document.getElementById('customerDetailsStatus')
+    .textContent =
+      customer.accountStatus || '—';
+
+  document.getElementById('customerDetailsCreated')
+    .textContent =
+      formatAdminDate(customer.createdDate);
+
+  document.getElementById('customerDetailsLastLogin')
+    .textContent =
+      customer.lastLogin
+        ? formatAdminDate(customer.lastLogin)
+        : 'Never';
+}
+
+
+function closeCustomerDetails() {
+
+  document.getElementById('customerDetailsPage')
+    .classList.add('hidden');
+
+  document.getElementById('customersPage')
+    .classList.remove('hidden');
+}
+
     function loadAdminCustomers() {
 
   const callback =
@@ -865,11 +981,12 @@ function closeCustomers() {
     container.innerHTML =
       data.customers.map(function(customer) {
 
-        return `
-          <div
-            class="card"
-            style="margin-bottom:12px; cursor:pointer;"
-          >
+          return `
+      <div
+        class="card"
+        style="margin-bottom:12px; cursor:pointer;"
+        onclick='openCustomerDetails(${JSON.stringify(customer).replace(/'/g, "&#39;")})'
+      >
 
             <h3>
               ${escapeHtml(customer.firstName)}
