@@ -436,6 +436,35 @@
   </div>
 
 </section>
+
+  <section id="productsPage" class="page hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <h1>Science by HUGs</h1>
+      <p>Products</p>
+    </div>
+
+    <button class="admin-label" onclick="closeProducts()">
+      Back
+    </button>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="eyebrow">Management</div>
+
+    <h2>Products</h2>
+
+    <p>View and manage your product catalog.</p>
+
+  </section>
+
+  <div id="productsList"></div>
+
+</section>
   <section id="customersPage" class="page hidden">
 
   <header class="topbar">
@@ -708,11 +737,11 @@
   <p>View customer accounts and information.</p>
 </a>
 
-      <a class="card" href="#">
-        <div class="icon">🧪</div>
-        <h3>Products</h3>
-        <p>Manage your product catalog.</p>
-      </a>
+      <a class="card" href="#" onclick="openProducts(); return false;">
+  <div class="icon">🧪</div>
+  <h3>Products</h3>
+  <p>Manage your product catalog.</p>
+</a>
 
       <a class="card" href="#">
         <div class="icon">📄</div>
@@ -1017,7 +1046,26 @@ function closeCustomers() {
   document.getElementById('dashboardPage')
     .classList.remove('hidden');
 }
+function openProducts() {
 
+  document.getElementById('dashboardPage')
+    .classList.add('hidden');
+
+  document.getElementById('productsPage')
+    .classList.remove('hidden');
+
+  loadAdminProducts();
+}
+
+
+function closeProducts() {
+
+  document.getElementById('productsPage')
+    .classList.add('hidden');
+
+  document.getElementById('dashboardPage')
+    .classList.remove('hidden');
+}
     function openCustomerDetails(customer) {
       window.currentCustomer = customer;
 
