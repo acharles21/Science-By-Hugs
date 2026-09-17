@@ -548,12 +548,13 @@
 
 
   <button
-    id="saveTemplateButton"
-    class="login-button"
-    style="margin-top:16px;"
-  >
-    Save Template
-  </button>
+  id="saveTemplateButton"
+  class="login-button"
+  style="margin-top:16px;"
+  onclick="saveMessageTemplate()"
+>
+  Save Template
+</button>
 
 
   <div
@@ -1225,6 +1226,99 @@ function openNewMessageTemplate() {
   document.getElementById('templateEditMessage').textContent = '';
 
 }
+   function saveMessageTemplate() {
+
+  const name =
+    document.getElementById('templateName').value.trim();
+
+  const message =
+    document.getElementById('templateMessage').value.trim();
+
+  const button =
+    document.getElementById('saveTemplateButton');
+
+  const status =
+    document.getElementById('templateEditMessage');
+
+  if (!name || !message) {
+
+    status.textContent =
+      'Please enter a template name and message.';
+
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Saving…';
+  status.textContent = '';
+
+  const callback =
+    '__sbhCreateMessageTemplate_' + Date.now();
+
+  window[callback] = function(data) {
+
+    button.disabled = false;
+    button.textContent = 'Save Template';
+
+    if (data && data.success) {
+
+      status.textContent =
+        'Template saved successfully.';
+
+      setTimeout(function() {
+
+        document.getElementById('messageTemplateEditPage')
+          .classList.add('hidden');
+
+        document.getElementById('messageTemplatesPage')
+          .classList.remove('hidden');
+
+        loadAdminMessageTemplates();
+
+      }, 500);
+
+    } else {
+
+      status.textContent =
+        (data && data.error)
+          ? data.error
+          : 'Unable to save template.';
+    }
+
+    delete window[callback];
+    script.remove();
+  };
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    API_URL +
+    '?api=createAdminMessageTemplate' +
+    '&templateName=' +
+    encodeURIComponent(name) +
+    '&message=' +
+    encodeURIComponent(message) +
+    '&callback=' +
+    callback +
+    '&t=' +
+    Date.now();
+
+  script.onerror = function() {
+
+    button.disabled = false;
+    button.textContent = 'Save Template';
+
+    status.textContent =
+      'We could not connect to the template service.';
+
+    delete window[callback];
+    script.remove();
+  };
+
+  document.body.appendChild(script);
+}
+    
     function loadAdminMessageTemplates() {
 
   const callback =
