@@ -299,6 +299,204 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* =========================================================
+   SCIENCE BY HUGs ADMIN — GOLD & BLACK THEME
+========================================================= */
+
+:root {
+  --admin-black: #050505;
+  --admin-black-2: #0a0a09;
+  --admin-panel: #11110f;
+  --admin-panel-2: #171612;
+
+  --admin-gold: #d4a23a;
+  --admin-gold-light: #f4d98b;
+  --admin-gold-bright: #ffe7a6;
+
+  --admin-white: #f7f7f5;
+  --admin-cream: #eee5d0;
+  --admin-muted: #a9a294;
+
+  --admin-line: rgba(212, 162, 58, 0.35);
+  --admin-glow: rgba(212, 162, 58, 0.20);
+}
+
+/* Main background */
+html,
+body {
+  background: var(--admin-black);
+  color: var(--admin-white);
+}
+
+/* Main app pages */
+.page {
+  background: transparent;
+}
+
+/* Login */
+.login-card {
+  background: linear-gradient(
+    145deg,
+    var(--admin-panel-2),
+    var(--admin-panel)
+  );
+
+  border: 1px solid var(--admin-line);
+
+  box-shadow:
+    0 0 30px rgba(212, 162, 58, 0.08),
+    inset 0 0 25px rgba(212, 162, 58, 0.02);
+}
+
+.login-brand h1,
+.brand h1 {
+  color: var(--admin-gold-light);
+}
+
+.login-brand p,
+.brand p,
+.hero p,
+.card p,
+.login-message,
+.overview-label {
+  color: var(--admin-muted);
+}
+
+/* Headings */
+.login-title,
+.hero h2,
+.card h3 {
+  color: var(--admin-white);
+}
+
+/* Gold eyebrow labels */
+.eyebrow {
+  color: var(--admin-gold);
+}
+
+/* Admin badge / back buttons */
+.admin-label {
+  background: rgba(212, 162, 58, 0.08);
+  border-color: var(--admin-line);
+  color: var(--admin-gold-light);
+}
+
+/* Inputs */
+.field input {
+  background: #080807;
+  border-color: rgba(212, 162, 58, 0.25);
+  color: var(--admin-white);
+}
+
+.field input:focus {
+  border-color: var(--admin-gold);
+  box-shadow: 0 0 0 3px rgba(212, 162, 58, 0.10);
+}
+
+/* Primary buttons */
+.login-button {
+  background: linear-gradient(
+    135deg,
+    var(--admin-gold-light),
+    var(--admin-gold)
+  );
+
+  color: #080807;
+
+  box-shadow:
+    0 5px 18px rgba(212, 162, 58, 0.16);
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+/* Section titles */
+.section-title {
+  color: var(--admin-gold-light);
+  letter-spacing: 0.5px;
+}
+
+/* Cards */
+.card {
+  background: linear-gradient(
+    145deg,
+    #151410,
+    #0e0e0c
+  );
+
+  border-color: var(--admin-line);
+
+  box-shadow:
+    0 0 18px rgba(212, 162, 58, 0.04);
+}
+
+.card:active {
+  border-color: var(--admin-gold);
+  box-shadow:
+    0 0 22px rgba(212, 162, 58, 0.14);
+}
+
+/* Card icons */
+.icon {
+  background: rgba(212, 162, 58, 0.12);
+  color: var(--admin-gold-light);
+
+  border: 1px solid rgba(212, 162, 58, 0.20);
+
+  box-shadow:
+    inset 0 0 12px rgba(212, 162, 58, 0.05);
+}
+
+/* Overview */
+.overview {
+  background: linear-gradient(
+    145deg,
+    #151410,
+    #0e0e0c
+  );
+
+  border-color: var(--admin-line);
+
+  box-shadow:
+    0 0 20px rgba(212, 162, 58, 0.04);
+}
+
+.overview-row {
+  border-bottom-color: rgba(212, 162, 58, 0.18);
+}
+
+.overview-value {
+  color: var(--admin-gold-light);
+}
+
+/* Notice */
+.notice {
+  background: #0d0d0b;
+  border-color: rgba(212, 162, 58, 0.20);
+  color: var(--admin-muted);
+}
+
+/* Logout */
+.logout {
+  border-color: rgba(212, 162, 58, 0.30);
+  color: var(--admin-gold-light);
+}
+
+.logout:hover {
+  border-color: var(--admin-gold);
+  color: var(--admin-gold-bright);
+}
+
+/* Links */
+a {
+  color: var(--admin-gold-light);
+}
+
+a:hover {
+  color: var(--admin-gold-bright);
+}
   </style>
 </head>
 
