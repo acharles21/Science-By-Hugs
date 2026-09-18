@@ -1,6 +1,6 @@
 {
   "name": "Science by HUGs Admin",
-  "short_name": "HUGs Admin",
+  "short_name": "Science by HUGs Admin",
   "start_url": "./admin.html",
   "display": "standalone",
   "background_color": "#0b0b0d",
