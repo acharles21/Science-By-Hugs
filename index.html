@@ -657,8 +657,13 @@ function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function money(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString("en-US",{style:"currency",currency:"USD"}):"";}
 
 function payNow() {
+
   if (!cart.length) {
-    alert("Your cart is empty.");
+    return;
+  }
+
+  if (!getSavedCustomer()) {
+    showPage("accountPage");
     return;
   }
 
