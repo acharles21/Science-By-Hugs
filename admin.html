@@ -2895,7 +2895,13 @@ function loadAdminOverview() {
 
   <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./admin-sw.js');
+  navigator.serviceWorker.register('./admin-sw.js').then(reg => {
+    reg.update();
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
 }
 </script>
   
