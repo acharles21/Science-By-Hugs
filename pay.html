@@ -335,92 +335,84 @@
   </main>
 
   <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec";
 
-const checkoutData = JSON.parse(
-  localStorage.getItem("sbhCheckout") || "null"
-);
+const SHIPPING_RATES = {
+  "Shipping - Emlin (L)": 70,
+  "Shipping - Emlin (S)": 50,
+  "Shipping - Emlin (US)": 20,
+  "Shipping - Amazon": 3,
+  "Shipping - Ella (US)": 20,
+  "Shipping - Ella (CN)": 50,
+  "Shipping Gigi": 16,
+  "Shipping": 0
+};
 
-if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
-  window.location.href = "index.html";
-}
-
-const savedCustomer = JSON.parse(
-  localStorage.getItem("sbhCustomer") || "null"
-);
-
-if (savedCustomer) {
-  checkoutData.customer = savedCustomer;
-}
-    if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
-  window.location.href = "index.html";
-    }
-    function money(value) {
+function money(value) {
   return "$" + Number(value || 0).toFixed(2);
 }
 
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem("sbhCart") || "[]");
+  } catch (e) {
+    return [];
+  }
+}
+
+function getCustomer() {
+  try {
+    return JSON.parse(localStorage.getItem("sbhCustomer") || "null");
+  } catch (e) {
+    return null;
+  }
+}
+
+const checkoutCart = getCart();
+const checkoutCustomer = getCustomer();
+
+if (!checkoutCustomer || !checkoutCustomer.email || !checkoutCart.length) {
+  window.location.href = "./index.html";
+}
+
 function loadCheckoutSummary() {
-
-  const cart = checkoutData.cart;
-
-  const subtotal = cart.reduce(function(total, item) {
-    return total + (Number(item.price) * Number(item.quantity));
+  const subtotal = checkoutCart.reduce(function(total, item) {
+    return total + Number(item.price || 0) * Number(item.quantity || 0);
   }, 0);
 
   const discount = 0;
-
   const shippingSources = new Set();
 
-  cart.forEach(function(item) {
+  checkoutCart.forEach(function(item) {
     if (item.shippingFrom) {
-      shippingSources.add(item.shippingFrom);
+      shippingSources.add(String(item.shippingFrom).trim());
     }
   });
 
-  const SHIPPING_RATES = {
-    "Shipping - Emlin (L)": 70,
-    "Shipping - Emlin (S)": 50,
-    "Shipping - Emlin (US)": 20,
-    "Shipping - Amazon": 3,
-    "Shipping - Ella (US)": 20,
-    "Shipping - Ella (CN)": 50,
-    "Shipping Gigi": 16,
-    "Shipping": 0
-  };
-
-  const customer = checkoutData.customer;
-
   const foundingMember =
-    customer &&
-    String(customer.membership || "").trim().toLowerCase() === "founding member";
+    String(checkoutCustomer.membership || "").trim().toLowerCase() === "founding member";
 
-  const shipping = Array.from(shippingSources).reduce(
-    function(total, source) {
+  let shipping = 0;
 
-      if (
-        foundingMember &&
-        String(source).trim().toLowerCase() === "shipping gigi"
-      ) {
-        return total;
-      }
-
-      return total + (Number(SHIPPING_RATES[source]) || 0);
-
-    },
-    0
-  );
+  shippingSources.forEach(function(source) {
+    if (
+      foundingMember &&
+      String(source).trim().toLowerCase() === "shipping gigi"
+    ) {
+      return;
+    }
+    shipping += Number(SHIPPING_RATES[String(source).trim()] || 0);
+  });
 
   const tax = subtotal * 0.08;
-
   const total = subtotal - discount + shipping + tax;
 
   document.getElementById("checkoutItems").innerHTML =
-    cart.map(function(item) {
-      return `
-        <div class="summary-line">
-          <span>${item.product} × ${item.quantity}</span>
-          <strong>${money(Number(item.price) * Number(item.quantity))}</strong>
-        </div>
-      `;
+    checkoutCart.map(function(item) {
+      return '<div class="summary-line">' +
+        '<span>' + item.product + ' × ' + item.quantity + '</span>' +
+        '<strong>' + money(Number(item.price || 0) * Number(item.quantity || 0)) + '</strong>' +
+        '</div>';
     }).join("");
 
   document.getElementById("checkoutSubtotal").textContent = money(subtotal);
@@ -432,41 +424,35 @@ function loadCheckoutSummary() {
 
 loadCheckoutSummary();
 
- function startPayNow(method) {
+function startPayNow(method) {
+  if (!checkoutCustomer || !checkoutCustomer.email || !checkoutCart.length) {
+    window.location.href = "./index.html";
+    return;
+  }
 
- if (!localStorage.getItem("sbhCustomer")) {
-  alert("Please log in or create an account before placing an order.");
-  window.location.href = "./index.html";
-  return;
-}
+  const data = encodeURIComponent(JSON.stringify({
+    cart: checkoutCart,
+    customer: checkoutCustomer
+  }));
 
-  if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
+  const callback = "sbhPayNowCallback_" + Date.now();
+  const script = document.createElement("script");
 
-  const data = encodeURIComponent(
-    JSON.stringify({
-      cart: checkoutData.cart,
-      customer: checkoutData.customer
-    })
-  );
-
-  const callback = "sbhPayNowCallback";
-
-  window.sbhPayNowCallback = function(response) {
-
+  window[callback] = function(response) {
     if (!response || !response.success) {
       alert(
         "We couldn't create your order.\n\n" +
-        (response && response.error
-          ? response.error
-          : "Please try again.")
+        (response && response.error ? response.error : "Please try again.")
       );
+      delete window[callback];
+      script.remove();
       return;
     }
 
-    localStorage.setItem(
-      "sbhPayNowInvoice",
-      response.invoiceNumber
-    );
+    localStorage.setItem("sbhPayNowInvoice", response.invoiceNumber);
+
+    delete window[callback];
+    script.remove();
 
     if (method === "paypal") {
       window.location.href = "./paypal.html";
@@ -474,8 +460,7 @@ loadCheckoutSummary();
     }
 
     if (method === "venmo") {
-      window.location.href =
-        "https://venmo.com/u/sciencebyhugs";
+      window.location.href = "https://venmo.com/u/sciencebyhugs";
       return;
     }
 
@@ -485,37 +470,37 @@ loadCheckoutSummary();
     }
   };
 
-  const script =
-    document.createElement("script");
-
   script.src =
-    "https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec" +
+    API_URL +
     "?api=createPayNowOrder" +
     "&data=" + data +
-    "&callback=" + callback;
+    "&callback=" + callback +
+    "&t=" + Date.now();
+
+  script.onerror = function() {
+    alert("We couldn't connect to the order service. Please try again.");
+    delete window[callback];
+    script.remove();
+  };
 
   document.body.appendChild(script);
 }
-    
-    function copyZelle() {
-      navigator.clipboard.writeText("ahugershoff@icloud.com");
 
-      const copied = document.getElementById("copied");
-
-      copied.style.display = "block";
-
-      setTimeout(function() {
-        copied.style.display = "none";
-      }, 2500);
-    }
-  </script>
-
+function copyZelle() {
+  navigator.clipboard.writeText("ahugershoff@icloud.com");
+  const copied = document.getElementById("copied");
+  copied.style.display = "block";
+  setTimeout(function() {
+    copied.style.display = "none";
+  }, 2500);
+}
+</script>
 </body>
   <script>
 (function () {
 
   // Force the browser to check for the newest version of this page.
-  const currentVersion = "v2";
+  const currentVersion = "v3";
 
   const savedVersion =
     localStorage.getItem("sbhPayVersion");
@@ -547,6 +532,3 @@ loadCheckoutSummary();
 })();
 </script>
 </html>
-
-
-
