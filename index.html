@@ -658,11 +658,17 @@ function money(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString("
 
 function payNow() {
 
-  if (!cart.length) {
+  const savedCart = JSON.parse(
+    localStorage.getItem("sbhCart") || "[]"
+  );
+
+  if (!savedCart.length) {
     return;
   }
 
-  if (!getSavedCustomer()) {
+  const customer = getSavedCustomer();
+
+  if (!customer) {
     showPage("accountPage");
     return;
   }
@@ -670,8 +676,8 @@ function payNow() {
   localStorage.setItem(
     "sbhCheckout",
     JSON.stringify({
-      cart: cart,
-      customer: getSavedCustomer()
+      cart: savedCart,
+      customer: customer
     })
   );
 
