@@ -896,8 +896,18 @@ cart.forEach(item => {
 });
 
 const shipping = Array.from(shippingSources).reduce(
-  (total, source) =>
-    total + (Number(SHIPPING_RATES[source]) || 0),
+  (total, source) => {
+
+    if (
+      isFoundingMember() &&
+      String(source).trim().toLowerCase() === "shipping gigi"
+    ) {
+      return total;
+    }
+
+    return total + (Number(SHIPPING_RATES[source]) || 0);
+
+  },
   0
 );
 
@@ -941,6 +951,18 @@ function getSavedCustomer(){
   catch(e){return null;}
 }
 
+function isFoundingMember() {
+
+  const customer = getSavedCustomer();
+
+  if (!customer) return false;
+
+  return String(customer.membership || "")
+    .trim()
+    .toLowerCase() === "founding member";
+
+}
+  
 function saveCustomer(customer){
   localStorage.setItem("sbhCustomer",JSON.stringify(customer));
   localStorage.setItem("sbhProfile",JSON.stringify({
