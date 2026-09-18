@@ -205,10 +205,16 @@
     }
 
     .section-title {
-      margin: 28px 0 12px;
-      font-size: 15px;
-      font-weight: 700;
-    }
+  margin: 30px 0 12px;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  color: var(--admin-gold);
+
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
 
     .grid {
       display: grid;
@@ -553,6 +559,403 @@ a {
 a:hover {
   color: var(--admin-gold-bright);
 }
+ 
+  
+  /* =========================================================
+   SCIENCE BY HUGs ADMIN — FINAL GOLD POLISH
+========================================================= */
+
+/* ---------------------------------------------------------
+   1. DASHBOARD HERO
+--------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  padding: 22px 20px 24px;
+  margin-bottom: 28px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(212, 162, 58, 0.13),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(212, 162, 58, 0.045),
+      rgba(255, 255, 255, 0.01)
+    );
+
+  border: 1px solid rgba(212, 162, 58, 0.18);
+  border-radius: 20px;
+
+  box-shadow:
+    0 0 30px rgba(212, 162, 58, 0.04),
+    inset 0 0 25px rgba(212, 162, 58, 0.02);
+}
+
+.hero .eyebrow {
+  color: var(--admin-gold);
+}
+
+.hero h2 {
+  color: var(--admin-white);
+
+  text-shadow:
+    0 0 18px rgba(212, 162, 58, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   2. OVERVIEW NUMBERS
+--------------------------------------------------------- */
+
+.overview-value {
+  color: var(--admin-gold-light);
+
+  font-size: 18px;
+  font-weight: 800;
+
+  text-shadow:
+    0 0 12px rgba(212, 162, 58, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   3. GOLD STATUS / IMPORTANT VALUES
+--------------------------------------------------------- */
+
+.status,
+.status-pill,
+.badge {
+  color: var(--admin-gold-light);
+
+  background: rgba(212, 162, 58, 0.10);
+
+  border: 1px solid rgba(212, 162, 58, 0.30);
+
+  border-radius: 999px;
+
+  padding: 5px 9px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* ---------------------------------------------------------
+   4. BUTTON SYSTEM
+--------------------------------------------------------- */
+
+button {
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+
+/* Primary gold buttons */
+
+.login-button,
+.primary-button {
+  background:
+    linear-gradient(
+      135deg,
+      var(--admin-gold-light),
+      var(--admin-gold)
+    );
+
+  color: #080807;
+
+  border: 1px solid rgba(255, 231, 166, 0.45);
+
+  box-shadow:
+    0 5px 18px rgba(212, 162, 58, 0.16);
+}
+
+.login-button:hover,
+.primary-button:hover {
+  box-shadow:
+    0 0 24px rgba(212, 162, 58, 0.24);
+}
+
+
+/* Secondary / Back buttons */
+
+.admin-label {
+  background: rgba(212, 162, 58, 0.06);
+
+  border: 1px solid rgba(212, 162, 58, 0.30);
+
+  color: var(--admin-gold-light);
+
+  cursor: pointer;
+}
+
+.admin-label:hover {
+  border-color: var(--admin-gold);
+
+  background: rgba(212, 162, 58, 0.10);
+}
+
+
+/* Logout */
+
+.logout {
+  background: rgba(212, 162, 58, 0.025);
+
+  border-color: rgba(212, 162, 58, 0.30);
+
+  color: var(--admin-gold-light);
+}
+
+.logout:hover {
+  background: rgba(212, 162, 58, 0.08);
+
+  border-color: var(--admin-gold);
+
+  box-shadow:
+    0 0 18px rgba(212, 162, 58, 0.08);
+}
+
+
+/* ---------------------------------------------------------
+   5. CARD INTERACTIONS
+--------------------------------------------------------- */
+
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(212, 162, 58, 0.45),
+      transparent
+    );
+
+  opacity: 0.55;
+}
+
+.card:hover {
+  border-color: rgba(212, 162, 58, 0.50);
+
+  box-shadow:
+    0 0 24px rgba(212, 162, 58, 0.08),
+    inset 0 0 20px rgba(212, 162, 58, 0.025);
+}
+
+
+/* ---------------------------------------------------------
+   6. CARD ICONS
+--------------------------------------------------------- */
+
+.icon {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(212, 162, 58, 0.15),
+      rgba(212, 162, 58, 0.06)
+    );
+
+  border: 1px solid rgba(212, 162, 58, 0.32);
+
+  color: var(--admin-gold-light);
+
+  box-shadow:
+    inset 0 0 15px rgba(212, 162, 58, 0.04),
+    0 0 12px rgba(212, 162, 58, 0.04);
+}
+
+
+/* ---------------------------------------------------------
+   7. PAGE HEADER BRANDING
+--------------------------------------------------------- */
+
+.brand h1 {
+  color: var(--admin-gold-light);
+
+  text-shadow:
+    0 0 16px rgba(212, 162, 58, 0.08);
+}
+
+.brand p {
+  color: var(--admin-muted);
+}
+
+
+/* ---------------------------------------------------------
+   8. LOGIN ICON AMBIENT GLOW
+--------------------------------------------------------- */
+
+.login-brand img {
+  box-shadow:
+    0 0 25px rgba(212, 162, 58, 0.18),
+    0 0 55px rgba(212, 162, 58, 0.07);
+}
+
+
+/* ---------------------------------------------------------
+   9. LOGIN TITLE
+--------------------------------------------------------- */
+
+.login-title {
+  color: var(--admin-gold-light);
+}
+
+
+/* ---------------------------------------------------------
+   10. INPUT FIELDS
+--------------------------------------------------------- */
+
+.field input {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.field input:hover {
+  border-color: rgba(212, 162, 58, 0.35);
+}
+
+.field input:focus {
+  border-color: var(--admin-gold);
+
+  box-shadow:
+    0 0 0 3px rgba(212, 162, 58, 0.08),
+    0 0 18px rgba(212, 162, 58, 0.06);
+}
+
+
+/* ---------------------------------------------------------
+   11. OVERVIEW PANEL
+--------------------------------------------------------- */
+
+.overview {
+  background:
+    linear-gradient(
+      145deg,
+      #17150f,
+      #0d0d0b
+    );
+
+  border-color: rgba(212, 162, 58, 0.28);
+
+  box-shadow:
+    0 0 22px rgba(212, 162, 58, 0.04),
+    inset 0 0 20px rgba(212, 162, 58, 0.02);
+}
+
+.overview-row {
+  border-bottom-color:
+    rgba(212, 162, 58, 0.16);
+}
+
+
+/* ---------------------------------------------------------
+   12. SECTION HEADERS
+--------------------------------------------------------- */
+
+.section-title {
+  color: var(--admin-gold);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+
+/* ---------------------------------------------------------
+   13. NOTICE / INFORMATION BOXES
+--------------------------------------------------------- */
+
+.notice {
+  background:
+    linear-gradient(
+      145deg,
+      #11110f,
+      #0b0b09
+    );
+
+  border-color:
+    rgba(212, 162, 58, 0.20);
+
+  color: var(--admin-muted);
+
+  box-shadow:
+    inset 0 0 18px rgba(212, 162, 58, 0.015);
+}
+
+
+/* ---------------------------------------------------------
+   14. LINKS
+--------------------------------------------------------- */
+
+a {
+  color: var(--admin-gold-light);
+}
+
+a:hover {
+  color: var(--admin-gold-bright);
+}
+
+
+/* ---------------------------------------------------------
+   15. GOLD DIVIDER DETAILS
+--------------------------------------------------------- */
+
+.topbar {
+  border-bottom:
+    1px solid rgba(212, 162, 58, 0.20);
+
+  padding-bottom: 18px;
+}
+
+
+/* ---------------------------------------------------------
+   16. MOBILE TOUCH FEEDBACK
+--------------------------------------------------------- */
+
+@media (max-width: 520px) {
+
+  .card:active {
+    transform: scale(0.985);
+
+    border-color:
+      rgba(212, 162, 58, 0.60);
+
+    box-shadow:
+      0 0 25px rgba(212, 162, 58, 0.12);
+  }
+
+  .login-button:active,
+  .logout:active,
+  .admin-label:active {
+    transform: scale(0.98);
+  }
+}
+  
   </style>
 </head>
 
