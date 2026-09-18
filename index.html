@@ -749,6 +749,31 @@ const QUANTITY_ENTRIES = [
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0zz3iz325LY_wNop-cl1rtuzlR4tC3ELgW3OP6S7EBDlToQ/viewform";
 let cart=[];
 
+function showToast(message) {
+  const toast = document.createElement("div");
+
+  toast.textContent = message;
+
+  toast.style.position = "fixed";
+  toast.style.bottom = "90px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%)";
+  toast.style.background = "#222";
+  toast.style.color = "#fff";
+  toast.style.padding = "12px 18px";
+  toast.style.borderRadius = "12px";
+  toast.style.fontSize = "14px";
+  toast.style.fontWeight = "600";
+  toast.style.zIndex = "9999";
+  toast.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+
+  document.body.appendChild(toast);
+
+  setTimeout(function() {
+    toast.remove();
+  }, 2000);
+}
+  
 function addToCart(id) {
 
   const product = products.find(p => Number(p.id) === Number(id));
