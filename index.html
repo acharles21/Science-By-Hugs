@@ -753,7 +753,9 @@ const QUANTITY_ENTRIES = [
   "entry.900412488"
 ];
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0zz3iz325LY_wNop-cl1rtuzlR4tC3ELgW3OP6S7EBDlToQ/viewform";
-let cart=[];
+let cart = JSON.parse(
+  localStorage.getItem("sbhCart") || "[]"
+);
 
 function showToast(message) {
   const toast = document.createElement("div");
