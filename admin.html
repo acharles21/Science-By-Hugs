@@ -1553,24 +1553,19 @@ a:hover {
     </section>
 
     <div class="section-title">
-      Business
-    </div>
+  Customer Outreach
+</div>
 
-    <section class="grid">
+<section class="grid">
 
-      <a class="card" href="#">
-        <div class="icon">💳</div>
-        <h3>Payments</h3>
-        <p>Track customer payment activity.</p>
-      </a>
+  <a class="card" href="#" onclick="openJoinScienceText(); return false;">
+    <div class="icon">💬</div>
+    <h3>Join Science by HUGs</h3>
+    <p>Send a welcome text with our app and contact information.</p>
+  </a>
 
-      <a class="card" href="#">
-        <div class="icon">🚚</div>
-        <h3>Delivery</h3>
-        <p>Manage delivery status and ETAs.</p>
-      </a>
+</section>
 
-    </section>
 
     <div class="section-title">
       Overview
@@ -1888,6 +1883,24 @@ function closeMessageTemplates() {
     .classList.remove('hidden');
 
 }
+  function openJoinScienceText() {
+  const appLink = 'https://sciencebyhugs.com';
+  const contactLink = 'https://sciencebyhugs.com/Science-by-HUGs.vcf';
+
+  const message =
+    "Welcome to Science by HUGs! 🧪✨\n\n" +
+    "We're excited to have you with us! Welcome to the Science by HUGs community — we're here to make your experience simple, personal, and easy.\n\n" +
+    "📱 Download our app:\n" +
+    appLink + "\n\n" +
+    "📇 Add Science by HUGs to your contacts:\n" +
+    contactLink + "\n\n" +
+    "Welcome aboard! We look forward to working with you. 🧪💛";
+
+  const smsUrl =
+    'sms:&body=' + encodeURIComponent(message);
+
+  window.location.href = smsUrl;
+}  
 function openNewMessageTemplate() {
 
   document.getElementById('messageTemplatesPage')
