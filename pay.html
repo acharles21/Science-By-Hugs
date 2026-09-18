@@ -252,7 +252,7 @@
   </div>
 </div>
     <!-- PayPal -->
-    <a class="payment-option" href="./paypal.html">
+    <a class="payment-option" href="javascript:startPayNow('paypal')">
 
       <div class="payment-header">
 
@@ -422,6 +422,69 @@ function loadCheckoutSummary() {
 }
 
 loadCheckoutSummary();
+
+ function startPayNow(method) {
+
+  if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  const data = encodeURIComponent(
+    JSON.stringify({
+      cart: checkoutData.cart,
+      customer: checkoutData.customer
+    })
+  );
+
+  const callback = "sbhPayNowCallback";
+
+  window.sbhPayNowCallback = function(response) {
+
+    if (!response || !response.success) {
+      alert(
+        "We couldn't create your order.\n\n" +
+        (response && response.error
+          ? response.error
+          : "Please try again.")
+      );
+      return;
+    }
+
+    localStorage.setItem(
+      "sbhPayNowInvoice",
+      response.invoiceNumber
+    );
+
+    if (method === "paypal") {
+      window.location.href = "./paypal.html";
+      return;
+    }
+
+    if (method === "venmo") {
+      window.location.href =
+        "https://venmo.com/u/sciencebyhugs";
+      return;
+    }
+
+    if (method === "zelle") {
+      copyZelle();
+      return;
+    }
+  };
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbzinsZm0UTX4puZdr8yiy6FzzRMZuIUbPiYsyU_XT20avvmhbC_z_7Qfrqk7C7h2qCuYQ/exec" +
+    "?api=createPayNowOrder" +
+    "&data=" + data +
+    "&callback=" + callback;
+
+  document.body.appendChild(script);
+}
+    
     function copyZelle() {
       navigator.clipboard.writeText("ahugershoff@icloud.com");
 
