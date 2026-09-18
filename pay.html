@@ -436,4 +436,39 @@ loadCheckoutSummary();
   </script>
 
 </body>
+  <script>
+(function () {
+
+  // Force the browser to check for the newest version of this page.
+  const currentVersion = "v2";
+
+  const savedVersion =
+    localStorage.getItem("sbhPayVersion");
+
+  if (savedVersion !== currentVersion) {
+
+    localStorage.setItem(
+      "sbhPayVersion",
+      currentVersion
+    );
+
+    // Reload once so the browser requests the newest page.
+    if (!sessionStorage.getItem("sbhPayReloaded")) {
+
+      sessionStorage.setItem(
+        "sbhPayReloaded",
+        "1"
+      );
+
+      window.location.reload(true);
+    }
+  }
+
+  // Clear the one-time reload flag after loading.
+  setTimeout(function () {
+    sessionStorage.removeItem("sbhPayReloaded");
+  }, 1000);
+
+})();
+</script>
 </html>
