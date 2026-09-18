@@ -276,20 +276,207 @@
           <div class="account-arrow">›</div>
         </div>
       </div>
-
-      <div class="notice">Account features are being built in phases. Your existing catalog and ordering flow will continue to work while these features are added.</div>
     </section>
 
-    <section id="cartPage" class="page">
-      <div class="hero"><div class="eyebrow">Cart</div><h1>Your order.</h1><p>Review your products and continue to the secure order form.</p></div>
-      <div id="cartItems"></div>
-      <div id="cartEmpty" class="empty">Your cart is empty.</div>
-      <div id="cartActions" style="display:none">
-        <div class="total"><span>Total</span><span id="cartTotal">$0.00</span></div>
-        <button class="primary" onclick="submitCartOrder()">Continue to Order Form</button>
-        <button class="secondary" onclick="showProducts()">Continue Shopping</button>
+    <!-- =====================================================
+     CART PAGE
+====================================================== -->
+
+<section
+  id="cartPage"
+  class="page"
+>
+
+  <header class="header">
+
+    <div class="brand">
+      Science by HUGs
+    </div>
+
+    <div class="title">
+      Your Cart 🛒
+    </div>
+
+  </header>
+
+
+  <div
+    id="cartItems"
+    style="
+      width:100%;
+      padding:26px;
+    "
+  ></div>
+
+
+  <div
+    id="cartEmpty"
+    class="empty"
+  >
+    🛒
+    <br><br>
+    Your cart is empty.
+    <br><br>
+    Add some products to get started!
+  </div>
+
+
+  <div
+    id="cartActions"
+    style="
+      display:none;
+      width:100%;
+      padding:0 26px 130px;
+    "
+  >
+
+    <!-- ORDER SUMMARY -->
+
+    <div
+      style="
+        background:white;
+        border:1px solid #e1e4e8;
+        border-radius:30px;
+        padding:28px;
+        margin-top:10px;
+      "
+    >
+
+      <div
+        style="
+          font-size:30px;
+          font-weight:900;
+          margin-bottom:24px;
+        "
+      >
+        Order Summary
       </div>
-    </section>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          font-size:24px;
+          margin-bottom:14px;
+        "
+      >
+        <span>Subtotal</span>
+        <strong id="cartSubtotal">$0.00</strong>
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          font-size:24px;
+          margin-bottom:14px;
+        "
+      >
+        <span>Discounts</span>
+        <strong id="cartDiscount">-$0.00</strong>
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          font-size:24px;
+          margin-bottom:14px;
+        "
+      >
+        <span>Shipping</span>
+        <strong id="cartShipping">$0.00</strong>
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          font-size:24px;
+          margin-bottom:22px;
+        "
+      >
+        <span>Taxes (8%)</span>
+        <strong id="cartTax">$0.00</strong>
+      </div>
+
+
+      <div
+        style="
+          border-top:2px solid #e1e4e8;
+          padding-top:20px;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+        "
+      >
+
+        <span
+          style="
+            font-size:28px;
+            font-weight:900;
+          "
+        >
+          Total
+        </span>
+
+        <strong
+          id="cartTotal"
+          style="
+            font-size:34px;
+            font-weight:900;
+          "
+        >
+          $0.00
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- PAYMENT OPTIONS -->
+
+    <div
+      style="
+        font-size:30px;
+        font-weight:900;
+        margin:30px 0 18px;
+      "
+    >
+      Payment
+    </div>
+
+
+    <button
+      class="primary"
+      onclick="payNow()"
+      style="
+        width:100%;
+        margin-bottom:14px;
+      "
+    >
+      💳 Pay Now
+    </button>
+
+
+    <button
+      class="secondary"
+      onclick="submitCartOrder()"
+      style="
+        width:100%;
+      "
+    >
+      🧾 Request Invoice
+    </button>
+
+  </div>
+
+</section>
 
     <section id="membershipPage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
@@ -543,14 +730,38 @@ const QUANTITY_ENTRIES = [
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0zz3iz325LY_wNop-cl1rtuzlR4tC3ELgW3OP6S7EBDlToQ/viewform";
 let cart=[];
 
-function addToCart(id){
-  const p=products.find(x=>Number(x.id)===Number(id)); if(!p)return;
-  const existing=cart.find(x=>Number(x.id)===Number(id));
-  if(existing) existing.quantity++;
-  else cart.push({id:p.id,product:p.product,price:Number(p.price)||0,quantity:1});
+function addToCart(id) {
+
+  const product = products.find(p => Number(p.id) === Number(id));
+
+  if (!product) return;
+
+  const existing = cart.find(
+    item => Number(item.id) === Number(id)
+  );
+
+  if (existing) {
+
+    existing.quantity += 1;
+
+  } else {
+
+    cart.push({
+      id: product.id,
+      product: product.product,
+      price: Number(product.price),
+      quantity: 1,
+      shippingFrom: product.shippingFrom || ""
+    });
+
+  }
+
+  localStorage.setItem("sbhCart", JSON.stringify(cart));
+
   updateCartUI();
-  alert(p.product+" added to your cart.");
-  showProducts();
+
+  showToast("Added to cart 🛒");
+
 }
 function updateCartUI(){
   const n=cart.reduce((a,x)=>a+x.quantity,0);
@@ -564,20 +775,165 @@ function changeQty(id,delta){
   if(item.quantity<=0) cart=cart.filter(x=>Number(x.id)!==Number(id));
   updateCartUI();
 }
-function renderCart(){
-  const box=document.getElementById("cartItems"), empty=document.getElementById("cartEmpty"), actions=document.getElementById("cartActions");
-  if(!box)return;
-  if(!cart.length){
-    box.innerHTML=""; empty.style.display="block"; actions.style.display="none"; return;
+
+const SHIPPING_RATES = {
+  "Shipping - Emlin (L)": 70,
+  "Shipping - Emlin (S)": 50,
+  "Shipping - Emlin (US)": 20,
+  "Shipping - Amazon": 3,
+  "Shipping - Ella (US)": 20,
+  "Shipping - Ella (CN)": 50,
+  "Shipping Gigi": 16,
+  "Shipping": 0
+};
+  
+function renderCart() {
+
+  const box = document.getElementById("cartItems");
+  const empty = document.getElementById("cartEmpty");
+  const actions = document.getElementById("cartActions");
+
+  if (!box) return;
+
+  if (!cart.length) {
+
+    box.innerHTML = "";
+    empty.style.display = "block";
+    actions.style.display = "none";
+
+    return;
   }
-  empty.style.display="none"; actions.style.display="block";
-  box.innerHTML=cart.map(x=>`
-    <div class="cartrow">
-      <div class="cartinfo"><strong>${escapeHTML(x.product)}</strong><span>${money(x.price)} each</span></div>
-      <div class="qty"><button onclick="changeQty(${Number(x.id)},-1)">−</button><b>${x.quantity}</b><button onclick="changeQty(${Number(x.id)},1)">+</button></div>
-    </div>`).join("");
-  const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
-  document.getElementById("cartTotal").textContent=money(total);
+
+  empty.style.display = "none";
+  actions.style.display = "block";
+
+
+  /* =====================================================
+     CART ITEMS
+  ===================================================== */
+
+  box.innerHTML = cart.map(item => {
+
+    const itemTotal =
+      Number(item.price) * Number(item.quantity);
+
+    return `
+      <div class="cartrow">
+
+        <div class="cartinfo">
+
+          <strong>
+            ${escapeHTML(item.product)}
+          </strong>
+
+          <span>
+            ${money(item.price)} each
+          </span>
+
+        </div>
+
+
+        <div class="qty">
+
+          <button
+            onclick="changeQty(${Number(item.id)},-1)"
+          >
+            −
+          </button>
+
+          <b>
+            ${item.quantity}
+          </b>
+
+          <button
+            onclick="changeQty(${Number(item.id)},1)"
+          >
+            +
+          </button>
+
+        </div>
+
+
+        <strong>
+          ${money(itemTotal)}
+        </strong>
+
+      </div>
+    `;
+
+  }).join("");
+
+
+  /* =====================================================
+     ORDER CALCULATION
+  ===================================================== */
+
+  const subtotal = cart.reduce(
+    (total, item) =>
+      total +
+      (Number(item.price) * Number(item.quantity)),
+    0
+  );
+
+
+  const discount = 0;
+
+
+  /*
+     Shipping will be populated from the product's
+     shippingFrom value once we add that to the cart.
+  */
+
+const shippingSources = new Set();
+
+cart.forEach(item => {
+
+  if (item.shippingFrom) {
+    shippingSources.add(item.shippingFrom);
+  }
+
+});
+
+const shipping = Array.from(shippingSources).reduce(
+  (total, source) =>
+    total + (Number(SHIPPING_RATES[source]) || 0),
+  0
+);
+
+
+  /*
+     Taxes = 8% of subtotal
+  */
+
+  const tax = subtotal * 0.08;
+
+
+  const total =
+    subtotal -
+    discount +
+    shipping +
+    tax;
+
+
+  /* =====================================================
+     UPDATE SUMMARY
+  ===================================================== */
+
+  document.getElementById("cartSubtotal").textContent =
+    money(subtotal);
+
+  document.getElementById("cartDiscount").textContent =
+    "-" + money(discount);
+
+  document.getElementById("cartShipping").textContent =
+    money(shipping);
+
+  document.getElementById("cartTax").textContent =
+    money(tax);
+
+  document.getElementById("cartTotal").textContent =
+    money(total);
+
 }
 function getSavedCustomer(){
   try{return JSON.parse(localStorage.getItem("sbhCustomer")||"null");}
