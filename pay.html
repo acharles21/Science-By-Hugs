@@ -425,10 +425,13 @@ loadCheckoutSummary();
 
  function startPayNow(method) {
 
-  if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
-    alert("Your cart is empty.");
+  if (!checkoutData || !checkoutData.customer || !checkoutData.customer.email) {
+    alert("Please log in or create an account before placing an order.");
+    window.location.href = "./index.html";
     return;
   }
+
+  if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
 
   const data = encodeURIComponent(
     JSON.stringify({
