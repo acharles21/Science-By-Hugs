@@ -50,7 +50,47 @@
       color: #a9a9b0;
       font-size: 16px;
     }
+    .order-summary {
+  background: #151518;
+  border: 1px solid #29292e;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 24px;
+}
 
+.order-summary h2 {
+  margin: 0 0 18px;
+  font-size: 20px;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  color: #a9a9b0;
+  font-size: 15px;
+}
+
+.summary-line strong {
+  color: #f5f5f7;
+  font-weight: 600;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #29292e;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.summary-total strong {
+  color: #f5f5f7;
+}
     .payment-option {
       display: block;
       width: 100%;
@@ -181,7 +221,36 @@
       <h1>Science by HUGs</h1>
       <p>Choose your payment method.</p>
     </div>
+    <div class="order-summary">
+  <h2>Order Summary</h2>
 
+  <div id="checkoutItems"></div>
+
+  <div class="summary-line">
+    <span>Subtotal</span>
+    <strong id="checkoutSubtotal">$0.00</strong>
+  </div>
+
+  <div class="summary-line">
+    <span>Discounts</span>
+    <strong id="checkoutDiscount">$0.00</strong>
+  </div>
+
+  <div class="summary-line">
+    <span>Shipping</span>
+    <strong id="checkoutShipping">$0.00</strong>
+  </div>
+
+  <div class="summary-line">
+    <span>Taxes</span>
+    <strong id="checkoutTax">$0.00</strong>
+  </div>
+
+  <div class="summary-total">
+    <span>Total</span>
+    <strong id="checkoutTotal">$0.00</strong>
+  </div>
+</div>
     <!-- PayPal -->
     <a class="payment-option" href="./paypal.html">
 
@@ -268,6 +337,91 @@
   </main>
 
   <script>
+
+    const checkoutData = JSON.parse(
+  localStorage.getItem("sbhCheckout") || "null"
+    );
+
+    if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
+  window.location.href = "index.html";
+    }
+    function money(value) {
+  return "$" + Number(value || 0).toFixed(2);
+}
+
+function loadCheckoutSummary() {
+
+  const cart = checkoutData.cart;
+
+  const subtotal = cart.reduce(function(total, item) {
+    return total + (Number(item.price) * Number(item.quantity));
+  }, 0);
+
+  const discount = 0;
+
+  const shippingSources = new Set();
+
+  cart.forEach(function(item) {
+    if (item.shippingFrom) {
+      shippingSources.add(item.shippingFrom);
+    }
+  });
+
+  const SHIPPING_RATES = {
+    "Shipping - Emlin (L)": 70,
+    "Shipping - Emlin (S)": 50,
+    "Shipping - Emlin (US)": 20,
+    "Shipping - Amazon": 3,
+    "Shipping - Ella (US)": 20,
+    "Shipping - Ella (CN)": 50,
+    "Shipping Gigi": 16,
+    "Shipping": 0
+  };
+
+  const customer = checkoutData.customer;
+
+  const foundingMember =
+    customer &&
+    String(customer.membership || "").trim().toLowerCase() === "founding member";
+
+  const shipping = Array.from(shippingSources).reduce(
+    function(total, source) {
+
+      if (
+        foundingMember &&
+        String(source).trim().toLowerCase() === "shipping gigi"
+      ) {
+        return total;
+      }
+
+      return total + (Number(SHIPPING_RATES[source]) || 0);
+
+    },
+    0
+  );
+
+  const tax = subtotal * 0.08;
+
+  const total = subtotal - discount + shipping + tax;
+
+  document.getElementById("checkoutItems").innerHTML =
+    cart.map(function(item) {
+      return `
+        <div class="summary-line">
+          <span>${item.product} × ${item.quantity}</span>
+          <strong>${money(Number(item.price) * Number(item.quantity))}</strong>
+        </div>
+      `;
+    }).join("");
+
+  document.getElementById("checkoutSubtotal").textContent = money(subtotal);
+  document.getElementById("checkoutDiscount").textContent = money(discount);
+  document.getElementById("checkoutShipping").textContent = money(shipping);
+  document.getElementById("checkoutTax").textContent = money(tax);
+  document.getElementById("checkoutTotal").textContent = money(total);
+}
+
+loadCheckoutSummary();
     function copyZelle() {
       navigator.clipboard.writeText("ahugershoff@icloud.com");
 
