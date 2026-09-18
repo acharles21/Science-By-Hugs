@@ -336,9 +336,13 @@
 
   <script>
 
-    const checkoutData = JSON.parse(
+const checkoutData = JSON.parse(
   localStorage.getItem("sbhCheckout") || "null"
 );
+
+if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
+  window.location.href = "index.html";
+}
 
 const savedCustomer = JSON.parse(
   localStorage.getItem("sbhCustomer") || "null"
