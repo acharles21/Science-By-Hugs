@@ -2219,4 +2219,11 @@ function loadAdminOverview() {
   </script>
 
 </body>
+
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./admin-sw.js');
+}
+</script>
+  
 </html>
