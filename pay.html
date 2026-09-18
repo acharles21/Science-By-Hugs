@@ -487,12 +487,37 @@ function startPayNow(method) {
 }
 
 function copyZelle() {
-  navigator.clipboard.writeText("ahugershoff@icloud.com");
-  const copied = document.getElementById("copied");
-  copied.style.display = "block";
-  setTimeout(function() {
-    copied.style.display = "none";
-  }, 2500);
+
+  const zelleEmail = "ahugershoff@icloud.com";
+
+  navigator.clipboard.writeText(zelleEmail)
+    .then(function() {
+
+      const copied =
+        document.getElementById("copied");
+
+      copied.style.display = "block";
+
+      setTimeout(function() {
+        copied.style.display = "none";
+      }, 2500);
+
+    })
+    .catch(function() {
+
+      const copied =
+        document.getElementById("copied");
+
+      copied.textContent =
+        "✓ Zelle email: " + zelleEmail;
+
+      copied.style.display = "block";
+
+      setTimeout(function() {
+        copied.style.display = "none";
+      }, 4000);
+
+    });
 }
 </script>
 </body>
