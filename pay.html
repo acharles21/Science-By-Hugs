@@ -338,8 +338,15 @@
 
     const checkoutData = JSON.parse(
   localStorage.getItem("sbhCheckout") || "null"
-    );
+);
 
+const savedCustomer = JSON.parse(
+  localStorage.getItem("sbhCustomer") || "null"
+);
+
+if (savedCustomer) {
+  checkoutData.customer = savedCustomer;
+}
     if (!checkoutData || !checkoutData.cart || !checkoutData.cart.length) {
   window.location.href = "index.html";
     }
