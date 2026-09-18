@@ -656,6 +656,23 @@ let products=[], category="All";
 function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
 function money(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString("en-US",{style:"currency",currency:"USD"}):"";}
 
+function payNow() {
+  if (!cart.length) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  localStorage.setItem(
+    "sbhCheckout",
+    JSON.stringify({
+      cart: cart,
+      customer: getSavedCustomer()
+    })
+  );
+
+  window.location.href = "pay.html";
+}
+  
 function loadProducts(){
   const callback="__sbh_"+Date.now();
   window[callback]=data=>{
