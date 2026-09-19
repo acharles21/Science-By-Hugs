@@ -167,5 +167,13 @@
 
   </main>
 
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").then(registration => {
+    registration.update();
+  });
+}
+</script>
+  
 </body>
 </html>
