@@ -252,7 +252,7 @@
   </div>
 </div>
     <!-- PayPal -->
-    <a class="payment-option" href="javascript:startPayNow('paypal')">
+    <a class="payment-option" href="javascript:openPayPal(); startPayNow('paypal')">
 
       <div class="payment-header">
 
@@ -274,9 +274,10 @@
     </a>
 
     <!-- Venmo -->
-    <a
+
+<a
   class="payment-option"
-  href="javascript:startPayNow('venmo')"
+  href="javascript:openVenmo(); startPayNow('venmo')"
 >
 
       <div class="payment-header">
@@ -424,6 +425,14 @@ function loadCheckoutSummary() {
 
 loadCheckoutSummary();
 
+function openVenmo() {
+  window.open("https://venmo.com/u/sciencebyhugs", "_blank");
+}
+
+function openPayPal() {
+  window.open("./paypal.html", "_blank");
+}
+
 function startPayNow(method) {
   if (!checkoutCustomer || !checkoutCustomer.email || !checkoutCart.length) {
     window.location.href = "./index.html";
@@ -454,15 +463,7 @@ function startPayNow(method) {
     delete window[callback];
     script.remove();
 
-    if (method === "paypal") {
-      window.location.href = "./paypal.html";
-      return;
-    }
 
-    if (method === "venmo") {
-      window.location.href = "https://venmo.com/u/sciencebyhugs";
-      return;
-    }
 
     if (method === "zelle") {
       copyZelle();
