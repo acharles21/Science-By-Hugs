@@ -755,7 +755,11 @@ const QUANTITY_ENTRIES = [
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0zz3iz325LY_wNop-cl1rtuzlR4tC3ELgW3OP6S7EBDlToQ/viewform";
 const navigationEntry = performance.getEntriesByType("navigation")[0];
 
-if (navigationEntry && navigationEntry.type === "reload") {
+const isRefresh =
+  (navigationEntry && navigationEntry.type === "reload") ||
+  performance.navigation.type === 1;
+
+if (isRefresh) {
   localStorage.removeItem("sbhCart");
 }
 
