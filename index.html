@@ -1666,6 +1666,9 @@ if(window.visualViewport){
 }
 document.getElementById("search").addEventListener("input",render);
 requestAnimationFrame(syncBottomNav);
+  
+localStorage.removeItem("sbhCart");
+  
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").then(registration => {
     registration.update();
