@@ -1,4 +1,4 @@
-const CACHE = "sbh-pwa-v3";
+const CACHE = "sbh-pwa-v4";
 
 const APP_SHELL = [
   "./",
@@ -37,28 +37,34 @@ self.addEventListener("fetch", event => {
 
   if (url.origin !== location.origin) return;
 
-  // Always check the network first for the app shell.
+  // Always check the network first for HTML, JavaScript,
+  // CSS, manifests, and the service worker itself.
   if (
     url.pathname.endsWith("/") ||
-    url.pathname.endsWith("/index.html") ||
-    url.pathname.endsWith("/sw.js") ||
-    url.pathname.endsWith("/manifest.webmanifest")
+    url.pathname.endsWith(".html") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".webmanifest")
   ) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
           const copy = response.clone();
+
           caches.open(CACHE).then(cache => {
             cache.put(event.request, copy);
           });
+
           return response;
         })
         .catch(() => caches.match(event.request))
     );
+
     return;
   }
 
-  // Other files: cache first, then network.
+  // Images and other assets:
+  // use cache when available, otherwise fetch from network.
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request).then(networkResponse => {
