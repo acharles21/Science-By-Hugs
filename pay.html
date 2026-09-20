@@ -440,9 +440,10 @@ function startPayNow(method) {
   }
 
   const data = encodeURIComponent(JSON.stringify({
-    cart: checkoutCart,
-    customer: checkoutCustomer
-  }));
+  cart: checkoutCart,
+  customer: checkoutCustomer,
+  paymentMethod: method
+}));
 
   const callback = "sbhPayNowCallback_" + Date.now();
   const script = document.createElement("script");
