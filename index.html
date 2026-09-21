@@ -539,24 +539,7 @@
   </label>
 
 </div>
-function requirePolicyAcknowledgment() {
 
-  const checkbox =
-    document.getElementById(
-      'policyAcknowledgment'
-    );
-
-  if (!checkbox || !checkbox.checked) {
-
-    showToast(
-      'Please review and acknowledge all Science By HUGs policies before continuing.'
-    );
-
-    return false;
-  }
-
-  return true;
-}
 
 <!-- PAYMENT OPTIONS -->
 
@@ -1873,6 +1856,25 @@ function updateCheckoutButtons() {
       acknowledged ? 'pointer' : 'not-allowed';
   }
 
+}
+
+  function requirePolicyAcknowledgment() {
+
+  const checkbox =
+    document.getElementById(
+      'policyAcknowledgment'
+    );
+
+  if (!checkbox || !checkbox.checked) {
+
+    showToast(
+      'Please review and acknowledge all Science By HUGs policies before continuing.'
+    );
+
+    return false;
+  }
+
+  return true;
 }
   /* =====================================================
      UPDATE SUMMARY
