@@ -445,29 +445,161 @@
     </div>
 
 
-    <!-- PAYMENT OPTIONS -->
+ <!-- POLICY ACKNOWLEDGMENT -->
 
-    <div
+<div
+  style="
+    background:var(--panel);
+    border:1px solid #e1e4e8;
+    border-radius:24px;
+    padding:22px;
+    margin:30px 0 22px;
+  "
+>
+
+  <div
+    style="
+      font-size:22px;
+      font-weight:900;
+      margin-bottom:10px;
+    "
+  >
+    ⚠️ Before You Continue
+  </div>
+
+  <div
+    style="
+      font-size:16px;
+      line-height:1.6;
+      margin-bottom:16px;
+    "
+  >
+    Please review our
+    <a
+      href="#"
+      onclick="showPage('termsPage'); return false;"
+      style="font-weight:800;"
+    >
+      Terms & Conditions
+    </a>,
+    <a
+      href="#"
+      onclick="showPage('researchPage'); return false;"
+      style="font-weight:800;"
+    >
+      Research Use Only Policy
+    </a>,
+    <a
+      href="#"
+      onclick="showPage('privacyPage'); return false;"
+      style="font-weight:800;"
+    >
+      Privacy Policy
+    </a>,
+    and
+    <a
+      href="#"
+      onclick="showPage('refundPage'); return false;"
+      style="font-weight:800;"
+    >
+      Return & Refund Policy
+    </a>
+    before proceeding.
+  </div>
+
+  <label
+    style="
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      cursor:pointer;
+      font-size:16px;
+      line-height:1.5;
+      font-weight:800;
+    "
+  >
+
+    <input
+      type="checkbox"
+      id="policyAcknowledgment"
+      onchange="updateCheckoutButtons()"
       style="
-        font-size:30px;
-        font-weight:900;
-        margin:30px 0 18px;
+        width:22px;
+        height:22px;
+        margin-top:2px;
+        flex-shrink:0;
       "
     >
-      Payment
-    </div>
+
+    <span>
+      Yes, I have read, acknowledged, and agree to comply with all
+      Science By HUGs policies.
+    </span>
+
+  </label>
+
+</div>
+function requirePolicyAcknowledgment() {
+
+  const checkbox =
+    document.getElementById(
+      'policyAcknowledgment'
+    );
+
+  if (!checkbox || !checkbox.checked) {
+
+    showToast(
+      'Please review and acknowledge all Science By HUGs policies before continuing.'
+    );
+
+    return false;
+  }
+
+  return true;
+}
+
+<!-- PAYMENT OPTIONS -->
+
+<div
+  style="
+    font-size:30px;
+    font-weight:900;
+    margin:30px 0 18px;
+  "
+>
+  Payment
+</div>
 
 
-    <button
-      class="primary"
-      onclick="payNow()"
-      style="
-        width:100%;
-        margin-bottom:14px;
-      "
-    >
-      💳 Pay Now
-    </button>
+<button
+  id="payNowButton"
+  class="primary"
+  onclick="payNow()"
+  disabled
+  style="
+    width:100%;
+    margin-bottom:14px;
+    opacity:.45;
+    cursor:not-allowed;
+  "
+>
+  💳 Pay Now
+</button>
+
+
+<button
+  id="invoiceButton"
+  class="secondary"
+  onclick="submitCartOrder()"
+  disabled
+  style="
+    width:100%;
+    opacity:.45;
+    cursor:not-allowed;
+  "
+>
+  🧾 Request Invoice
+</button>
 
 
     <button
@@ -1366,6 +1498,9 @@ function money(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString("
 
 function payNow() {
 
+    if (!requirePolicyAcknowledgment()) {
+    return;
+  }
   const savedCart = JSON.parse(
     localStorage.getItem("sbhCart") || "[]"
   );
@@ -1695,7 +1830,50 @@ const shipping = Array.from(shippingSources).reduce(
     shipping +
     tax;
 
+function updateCheckoutButtons() {
 
+  const checkbox =
+    document.getElementById(
+      'policyAcknowledgment'
+    );
+
+  const payButton =
+    document.getElementById(
+      'payNowButton'
+    );
+
+  const invoiceButton =
+    document.getElementById(
+      'invoiceButton'
+    );
+
+  const acknowledged =
+    checkbox &&
+    checkbox.checked;
+
+  if (payButton) {
+    payButton.disabled =
+      !acknowledged;
+
+    payButton.style.opacity =
+      acknowledged ? '1' : '.45';
+
+    payButton.style.cursor =
+      acknowledged ? 'pointer' : 'not-allowed';
+  }
+
+  if (invoiceButton) {
+    invoiceButton.disabled =
+      !acknowledged;
+
+    invoiceButton.style.opacity =
+      acknowledged ? '1' : '.45';
+
+    invoiceButton.style.cursor =
+      acknowledged ? 'pointer' : 'not-allowed';
+  }
+
+}
   /* =====================================================
      UPDATE SUMMARY
   ===================================================== */
@@ -2321,7 +2499,10 @@ function saveProfile(){
   if(welcome){welcome.innerHTML=`<strong>${escapeHTML(name||"Your Science by HUGs account")}</strong><span>${escapeHTML(profile.email||"Profile details saved on this device.")}</span>`;}
 }
 
-function submitCartOrder(){
+function submitCartOrder
+    if (!requirePolicyAcknowledgment()) {
+    return;
+  }
   if(!cart.length){alert("Your cart is empty.");return;}
   if(cart.length>5){alert("Please limit your order to 5 different products.");return;}
   const params=[];
