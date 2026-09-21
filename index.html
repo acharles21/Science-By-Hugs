@@ -2501,7 +2501,7 @@ function saveProfile(){
   if(welcome){welcome.innerHTML=`<strong>${escapeHTML(name||"Your Science by HUGs account")}</strong><span>${escapeHTML(profile.email||"Profile details saved on this device.")}</span>`;}
 }
 
-function submitCartOrder
+function submitCartOrder() {
     if (!requirePolicyAcknowledgment()) {
     return;
   }
