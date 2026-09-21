@@ -121,7 +121,16 @@
     .benefit{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px}
     .benefit-icon{width:42px;height:42px;border-radius:13px;background:#111D29;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
     .benefit h3{margin:1px 0 5px;font-size:17px}.benefit p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
-
+.menu-button{
+  font-size:11px;
+  color:#C9D5E0;
+  border:1px solid rgba(255,255,255,.12);
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.04);
+  font-weight:900;
+  cursor:pointer;
+}
 /* PWA Install Card */
 .pwa-install-card{
   margin:18px 0;
@@ -174,7 +183,7 @@
         <img src="./icon.png" alt="">
         <div class="brandname">Science <span>by HUGs</span></div>
       </div>
-      <div class="status">LIVE CATALOG</div>
+      <button class="menu-button" onclick="showPage('menuPage')">☰ MENU</button>   
     </div>
   </header>
 
@@ -608,12 +617,36 @@
     </section>
 
     <section id="menuPage" class="page">
-      <div class="hero"><div class="eyebrow">Menu</div><h1>Science by HUGs 🚀</h1><p>Quick access to the app.</p></div>
-      <button class="menuitem" onclick="showProducts()">Products <span>›</span></button>
-      <button class="menuitem" onclick="showPage('cartPage')">Cart <span id="menuCartCount">0</span></button>
-      <button class="menuitem" onclick="showPage('accountPage')">Account <span>›</span></button>
-      <button class="menuitem" onclick="showPage('supportPage')">Support <span>›</span></button>
-    </section>
+  <div class="hero">
+    <div class="eyebrow">Menu</div>
+    <h1>Science by HUGs 🚀</h1>
+    <p>Everything you need in one place.</p>
+  </div>
+
+  <button class="menuitem" onclick="showProducts()">
+    Products <span>›</span>
+  </button>
+
+  <button class="menuitem" onclick="showPage('cartPage')">
+    Cart <span id="menuCartCount">0</span>
+  </button>
+
+  <button class="menuitem" onclick="showPage('accountPage')">
+    Account <span>›</span>
+  </button>
+
+  <button class="menuitem" onclick="showPage('supportPage')">
+    Support <span>›</span>
+  </button>
+
+  <button class="menuitem" onclick="showPage('legalPage')">
+    Legal Center <span>›</span>
+  </button>
+
+  <button class="menuitem">
+    Refer a Friend <span>›</span>
+  </button>
+</section>
 
 <section id="supportPage" class="page">
   <div class="hero">
