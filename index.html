@@ -1846,7 +1846,9 @@ function updateCheckoutButtons() {
     document.getElementById('payNowButton');
   const invoiceButton =
     document.getElementById('invoiceButton');
-  const acknowledged =
+ const acknowledged =
+  checkbox &&
+  checkbox.checked;
 
   if (payButton) {
     payButton.disabled = !acknowledged;
