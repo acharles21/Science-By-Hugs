@@ -562,7 +562,6 @@
     width:100%;
     margin-bottom:14px;
     opacity:.45;
-    cursor:not-allowed;
   "
 >
   💳 Pay Now
@@ -1847,8 +1846,6 @@ function updateCheckoutButtons() {
   const invoiceButton =
     document.getElementById('invoiceButton');
   const acknowledged =
-    checkbox &&
-    checkbox.checked;
 
   if (payButton) {
     payButton.disabled = !acknowledged;
