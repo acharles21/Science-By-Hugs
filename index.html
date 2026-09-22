@@ -2514,6 +2514,25 @@ function showProducts(){showPage("productsPage");}
   card.style.display = isStandalone ? "none" : "block";
 }
 
+(function () {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("returnTo") === "cart") {
+    window.addEventListener("load", function () {
+      showPage("cartPage");
+
+      const checkbox =
+        document.getElementById("policyAcknowledgment");
+
+      if (checkbox) {
+        checkbox.checked = false;
+      }
+
+      updateCheckoutButtons();
+    });
+  }
+})();
+  
 function showPWAInstallSteps(){
   const steps = document.getElementById("pwaInstallSteps");
   if(!steps) return;
