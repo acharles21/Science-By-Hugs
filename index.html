@@ -1800,24 +1800,7 @@ const shipping = Array.from(shippingSources).reduce(
     shipping +
     tax;
 
-  function requirePolicyAcknowledgment() {
-
-  const checkbox =
-    document.getElementById(
-      'policyAcknowledgment'
-    );
-
-  if (!checkbox || !checkbox.checked) {
-
-    showToast(
-      'Please review and acknowledge all Science By HUGs policies before continuing.'
-    );
-
-    return false;
-  }
-
-  return true;
-}
+  
   /* =====================================================
      UPDATE SUMMARY
   ===================================================== */
@@ -1838,7 +1821,24 @@ const shipping = Array.from(shippingSources).reduce(
     money(total);
 
 }
+function requirePolicyAcknowledgment() {
 
+  const checkbox =
+    document.getElementById(
+      'policyAcknowledgment'
+    );
+
+  if (!checkbox || !checkbox.checked) {
+
+    showToast(
+      'Please review and acknowledge all Science By HUGs policies before continuing.'
+    );
+
+    return false;
+  }
+
+  return true;
+}
 function updateCheckoutButtons() {
   const checkbox =
     document.getElementById('policyAcknowledgment');
