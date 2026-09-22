@@ -2555,7 +2555,10 @@ function showPage(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
-  if(id==="cartPage") renderCart();
+  if(id==="cartPage"){
+  renderCart();
+  updateCheckoutButtons();
+}
   window.scrollTo(0,0);
   syncBottomNav();
 }
