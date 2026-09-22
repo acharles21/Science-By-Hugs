@@ -584,17 +584,6 @@
   🧾 Request Invoice
 </button>
 
-
-    <button
-      class="secondary"
-      onclick="submitCartOrder()"
-      style="
-        width:100%;
-      "
-    >
-      🧾 Request Invoice
-    </button>
-
   </div>
 
 </section>
@@ -1813,51 +1802,6 @@ const shipping = Array.from(shippingSources).reduce(
     shipping +
     tax;
 
-function updateCheckoutButtons() {
-
-  const checkbox =
-    document.getElementById(
-      'policyAcknowledgment'
-    );
-
-  const payButton =
-    document.getElementById(
-      'payNowButton'
-    );
-
-  const invoiceButton =
-    document.getElementById(
-      'invoiceButton'
-    );
-
-  const acknowledged =
-    checkbox &&
-    checkbox.checked;
-
-  if (payButton) {
-    payButton.disabled =
-      !acknowledged;
-
-    payButton.style.opacity =
-      acknowledged ? '1' : '.45';
-
-    payButton.style.cursor =
-      acknowledged ? 'pointer' : 'not-allowed';
-  }
-
-  if (invoiceButton) {
-    invoiceButton.disabled =
-      !acknowledged;
-
-    invoiceButton.style.opacity =
-      acknowledged ? '1' : '.45';
-
-    invoiceButton.style.cursor =
-      acknowledged ? 'pointer' : 'not-allowed';
-  }
-
-}
-
   function requirePolicyAcknowledgment() {
 
   const checkbox =
@@ -1896,6 +1840,35 @@ function updateCheckoutButtons() {
     money(total);
 
 }
+
+function updateCheckoutButtons() {
+  const checkbox =
+    document.getElementById('policyAcknowledgment');
+  const payButton =
+    document.getElementById('payNowButton');
+  const invoiceButton =
+    document.getElementById('invoiceButton');
+  const acknowledged =
+    checkbox &&
+    checkbox.checked;
+
+  if (payButton) {
+    payButton.disabled = !acknowledged;
+    payButton.style.opacity =
+      acknowledged ? '1' : '.45';
+    payButton.style.cursor =
+      acknowledged ? 'pointer' : 'not-allowed';
+  }
+
+  if (invoiceButton) {
+    invoiceButton.disabled = !acknowledged;
+    invoiceButton.style.opacity =
+      acknowledged ? '1' : '.45';
+    invoiceButton.style.cursor =
+      acknowledged ? 'pointer' : 'not-allowed';
+  }
+}
+  
 function getSavedCustomer(){
   try{return JSON.parse(localStorage.getItem("sbhCustomer")||"null");}
   catch(e){return null;}
