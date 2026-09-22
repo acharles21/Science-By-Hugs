@@ -1842,13 +1842,16 @@ function requirePolicyAcknowledgment() {
 function updateCheckoutButtons() {
   const checkbox =
     document.getElementById('policyAcknowledgment');
+
   const payButton =
     document.getElementById('payNowButton');
+
   const invoiceButton =
     document.getElementById('invoiceButton');
- const acknowledged =
-  checkbox &&
-  checkbox.checked;
+
+  const acknowledged =
+    checkbox &&
+    checkbox.checked;
 
   if (payButton) {
     payButton.disabled = !acknowledged;
