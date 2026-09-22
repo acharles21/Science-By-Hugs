@@ -183,7 +183,13 @@
         <img src="./icon.png" alt="">
         <div class="brandname">Science <span>by HUGs</span></div>
       </div>
-      <button class="menu-button" onclick="showPage('menuPage')">☰ MENU</button>   
+      <button
+  id="menuButton"
+  class="menu-button"
+  onclick="toggleMenu()"
+>
+  ☰ MENU
+</button>  
     </div>
   </header>
 
@@ -2515,6 +2521,17 @@ function showPWAInstallSteps(){
   steps.style.display =
     steps.style.display === "block" ? "none" : "block";
 }
+
+function toggleMenu(){
+  const menu = document.getElementById("menuPage");
+
+  if (menu.classList.contains("active")) {
+    showPage("productsPage");
+  } else {
+    showPage("menuPage");
+  }
+}
+  
 function showPage(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   document.getElementById(id).classList.add("active");
