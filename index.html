@@ -591,58 +591,7 @@
   </div>
 
 </section>
-<section id="referralPage" class="page">
 
-  <button class="back" onclick="showPage('accountPage')">
-    ‹ Back to Account
-  </button>
-
-  <div class="hero">
-    <div class="eyebrow">Refer a Friend</div>
-    <h1>Share Science by HUGs.</h1>
-    <p>
-      Invite someone to join Science by HUGs using your personal referral code.
-    </p>
-  </div>
-
-  <div class="profile-form">
-
-    <label>
-      Your Referral Code
-
-      <input
-        id="myReferralCode"
-        type="text"
-        readonly
-        placeholder="Loading..."
-      >
-    </label>
-
-    <button
-      class="primary"
-      type="button"
-      onclick="copyReferralCode()"
-    >
-      Copy Referral Code
-    </button>
-
-    <button
-      class="primary"
-      type="button"
-      onclick="shareReferralLink()"
-    >
-      Share Referral Link
-    </button>
-
-    <div
-      id="referralMessage"
-      class="profile-saved"
-      aria-live="polite"
-    ></div>
-
-  </div>
-
-</section>
     <section id="membershipPage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
 
@@ -813,11 +762,62 @@
     Legal Center <span>›</span>
   </button>
 
-  <button class="menuitem">
-    Refer a Friend <span>›</span>
-  </button>
-</section>
+  <button class="menuitem" onclick="showReferralPage()">
+  Refer a Friend <span>›</span>
+</button>
 
+      <section id="referralPage" class="page">
+
+  <button class="back" onclick="showPage('accountPage')">
+    ‹ Back to Account
+  </button>
+
+  <div class="hero">
+    <div class="eyebrow">Refer a Friend</div>
+    <h1>Share Science by HUGs.</h1>
+    <p>
+      Invite someone to join Science by HUGs using your personal referral code.
+    </p>
+  </div>
+
+  <div class="profile-form">
+
+    <label>
+      Your Referral Code
+      <input
+        id="myReferralCode"
+        type="text"
+        readonly
+        placeholder="Loading..."
+      >
+    </label>
+
+    <button
+      class="primary"
+      type="button"
+      onclick="copyReferralCode()"
+    >
+      Copy Referral Code
+    </button>
+
+    <button
+      class="primary"
+      type="button"
+      onclick="shareReferralLink()"
+    >
+      Share Referral Link
+    </button>
+
+    <div
+      id="referralMessage"
+      class="profile-saved"
+      aria-live="polite"
+    ></div>
+
+  </div>
+
+</section>
+      
 <section id="supportPage" class="page">
   <div class="hero">
     <div class="eyebrow">Support</div>
@@ -2225,8 +2225,8 @@ function shareReferralLink(){
 
   }
 
+
 }
-  
 function showCreateAccount(){
   showPage("createAccountPage");
   const saved=getSavedCustomer()||{};
