@@ -765,8 +765,8 @@
   <button class="menuitem" onclick="showReferralPage()">
   Refer a Friend <span>›</span>
 </button>
-
-      <section id="referralPage" class="page">
+    </section>
+          <section id="referralPage" class="page">
 
   <button class="back" onclick="showPage('accountPage')">
     ‹ Back to Account
@@ -817,7 +817,7 @@
   </div>
 
 </section>
-      
+    
 <section id="supportPage" class="page">
   <div class="hero">
     <div class="eyebrow">Support</div>
@@ -1994,47 +1994,49 @@ function updateAccountUI(){
 
 function showReferralPage(){
 
-  const customer = getSavedCustomer();
-
-  if(!customer){
-
-    showPage("accountPage");
-
-    return;
-
-  }
-
   showPage("referralPage");
 
-  const code =
-    customer.customerId || "";
+  const customer =
+    getSavedCustomer();
 
   const codeInput =
     document.getElementById(
       "myReferralCode"
     );
 
-  if(codeInput){
-
-    codeInput.value =
-      code;
-
-  }
-
   const message =
     document.getElementById(
       "referralMessage"
     );
 
+  if(!customer){
+
+    if(codeInput){
+      codeInput.value = "";
+    }
+
+    if(message){
+      message.textContent =
+        "Please log in to use your referral code.";
+    }
+
+    return;
+  }
+
+  if(codeInput){
+
+    codeInput.value =
+      customer.customerId || "";
+
+  }
+
   if(message){
 
-    message.textContent =
-      "";
+    message.textContent = "";
 
   }
 
 }
-
 
 function getReferralLink(){
 
