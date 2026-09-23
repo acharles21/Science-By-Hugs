@@ -591,7 +591,58 @@
   </div>
 
 </section>
+<section id="referralPage" class="page">
 
+  <button class="back" onclick="showPage('accountPage')">
+    ‹ Back to Account
+  </button>
+
+  <div class="hero">
+    <div class="eyebrow">Refer a Friend</div>
+    <h1>Share Science by HUGs.</h1>
+    <p>
+      Invite someone to join Science by HUGs using your personal referral code.
+    </p>
+  </div>
+
+  <div class="profile-form">
+
+    <label>
+      Your Referral Code
+
+      <input
+        id="myReferralCode"
+        type="text"
+        readonly
+        placeholder="Loading..."
+      >
+    </label>
+
+    <button
+      class="primary"
+      type="button"
+      onclick="copyReferralCode()"
+    >
+      Copy Referral Code
+    </button>
+
+    <button
+      class="primary"
+      type="button"
+      onclick="shareReferralLink()"
+    >
+      Share Referral Link
+    </button>
+
+    <div
+      id="referralMessage"
+      class="profile-saved"
+      aria-live="polite"
+    ></div>
+
+  </div>
+
+</section>
     <section id="membershipPage" class="page">
       <button class="back" onclick="showPage('accountPage')">‹ Back to Account</button>
 
@@ -641,6 +692,17 @@
         <label>Last Name<input id="createLast" type="text" autocomplete="family-name" placeholder="Last name"></label>
         <label>Email<input id="createEmail" type="email" autocomplete="email" placeholder="Email address"></label>
         <label>Phone Number<input id="createPhone" type="tel" autocomplete="tel" placeholder="Phone number"></label>
+        <label>
+            Referral Code (Optional)
+            <input
+              id="createReferralCode"
+              type="text"
+              autocomplete="off"
+              placeholder="e.g. SBH-0001"
+              maxlength="8"
+              style="text-transform:uppercase;"
+            >
+          </label>
         <label>Password<input id="createPassword" type="password" autocomplete="new-password" placeholder="Create a password"></label>
         <button class="primary" onclick="createAccount()">Create Account</button>
         <div id="createAccountMessage" class="profile-saved" aria-live="polite"></div>
@@ -752,7 +814,7 @@
   </button>
 
   <button class="menuitem">
-    Refer a Friend - Coming Soon <span>›</span>
+    Refer a Friend <span>›</span>
   </button>
 </section>
 
@@ -1926,6 +1988,245 @@ function updateAccountUI(){
   }
 }
 
+/* =========================================================
+   REFER A FRIEND
+   ========================================================= */
+
+function showReferralPage(){
+
+  const customer = getSavedCustomer();
+
+  if(!customer){
+
+    showPage("accountPage");
+
+    return;
+
+  }
+
+  showPage("referralPage");
+
+  const code =
+    customer.customerId || "";
+
+  const codeInput =
+    document.getElementById(
+      "myReferralCode"
+    );
+
+  if(codeInput){
+
+    codeInput.value =
+      code;
+
+  }
+
+  const message =
+    document.getElementById(
+      "referralMessage"
+    );
+
+  if(message){
+
+    message.textContent =
+      "";
+
+  }
+
+}
+
+
+function getReferralLink(){
+
+  const customer =
+    getSavedCustomer();
+
+  if(!customer || !customer.customerId){
+
+    return "";
+
+  }
+
+  const baseUrl =
+    window.location.origin +
+    window.location.pathname;
+
+  return (
+    baseUrl +
+    "?ref=" +
+    encodeURIComponent(
+      customer.customerId
+    )
+  );
+
+}
+
+
+function copyReferralCode(){
+
+  const customer =
+    getSavedCustomer();
+
+  const message =
+    document.getElementById(
+      "referralMessage"
+    );
+
+  if(!customer || !customer.customerId){
+
+    if(message){
+
+      message.textContent =
+        "Please log in to use your referral code.";
+
+    }
+
+    return;
+
+  }
+
+  navigator.clipboard
+    .writeText(
+      customer.customerId
+    )
+    .then(function(){
+
+      if(message){
+
+        message.textContent =
+          "Referral code copied.";
+
+      }
+
+    })
+    .catch(function(){
+
+      if(message){
+
+        message.textContent =
+          "Unable to copy the referral code. Please copy it manually.";
+
+      }
+
+    });
+
+}
+
+
+function shareReferralLink(){
+
+  const link =
+    getReferralLink();
+
+  const customer =
+    getSavedCustomer();
+
+  const message =
+    document.getElementById(
+      "referralMessage"
+    );
+
+  if(!link || !customer){
+
+    if(message){
+
+      message.textContent =
+        "Please log in to use your referral link.";
+
+    }
+
+    return;
+
+  }
+
+  const shareData = {
+
+    title:
+      "Join Science by HUGs",
+
+    text:
+      "Join Science by HUGs using my referral link:",
+
+    url:
+      link
+
+  };
+
+  if(
+    navigator.share
+  ){
+
+    navigator
+      .share(
+        shareData
+      )
+      .then(function(){
+
+        if(message){
+
+          message.textContent =
+            "Referral link shared.";
+
+        }
+
+      })
+      .catch(function(error){
+
+        /*
+          User cancelled the share menu.
+          Do not show an error.
+        */
+
+        if(
+          error &&
+          error.name ===
+          "AbortError"
+        ){
+
+          return;
+
+        }
+
+        if(message){
+
+          message.textContent =
+            "Unable to share the referral link.";
+
+        }
+
+      });
+
+  }else{
+
+    navigator.clipboard
+      .writeText(
+        link
+      )
+      .then(function(){
+
+        if(message){
+
+          message.textContent =
+            "Referral link copied.";
+
+        }
+
+      })
+      .catch(function(){
+
+        if(message){
+
+          message.textContent =
+            link;
+
+        }
+
+      });
+
+  }
+
+}
+  
 function showCreateAccount(){
   showPage("createAccountPage");
   const saved=getSavedCustomer()||{};
@@ -2108,6 +2409,7 @@ function createAccount(){
   const email=document.getElementById("createEmail").value.trim();
   const phone=document.getElementById("createPhone").value.trim();
   const password=document.getElementById("createPassword").value;
+  const referralCode=document.getElementById("createReferralCode").value.trim().toUpperCase();
   const msg=document.getElementById("createAccountMessage");
 
   if(!first||!last||!email||!password){
@@ -2118,33 +2420,66 @@ function createAccount(){
   msg.textContent="Creating your account…";
 
   const callback="sbhCreateCustomer_"+Date.now();
+
   window[callback]=function(data){
     try{
       delete window[callback];
+
       const script=document.getElementById(callback);
       if(script)script.remove();
 
       if(!data||!data.success){
-        msg.textContent=data&&data.error?data.error:"We could not create your account. Please try again.";
+        msg.textContent=
+          data&&data.error
+            ? data.error
+            : "We could not create your account. Please try again.";
         return;
       }
 
       saveCustomer(data.customer);
+
       msg.textContent="Account created successfully.";
-      setTimeout(()=>showPage("accountPage"),500);
+
+      setTimeout(
+        ()=>showPage("accountPage"),
+        500
+      );
+
     }catch(error){
-      msg.textContent="We could not create your account. Please try again.";
+
+      msg.textContent=
+        "We could not create your account. Please try again.";
+
     }
   };
 
   const script=document.createElement("script");
+
   script.id=callback;
-  script.src=API_URL+"?api=createCustomer&first="+encodeURIComponent(first)+"&last="+encodeURIComponent(last)+"&email="+encodeURIComponent(email)+"&phone="+encodeURIComponent(phone)+"&password="+encodeURIComponent(password)+"&callback="+callback+"&t="+Date.now();
+
+  script.src=
+    API_URL+
+    "?api=createCustomer"+
+    "&first="+encodeURIComponent(first)+
+    "&last="+encodeURIComponent(last)+
+    "&email="+encodeURIComponent(email)+
+    "&phone="+encodeURIComponent(phone)+
+    "&password="+encodeURIComponent(password)+
+    "&referralCode="+encodeURIComponent(referralCode)+
+    "&callback="+callback+
+    "&t="+Date.now();
+
   script.onerror=function(){
+
     delete window[callback];
+
     script.remove();
-    msg.textContent="We could not connect to your account service. Please try again.";
+
+    msg.textContent=
+      "We could not connect to your account service. Please try again.";
+
   };
+
   document.body.appendChild(script);
 }
 
